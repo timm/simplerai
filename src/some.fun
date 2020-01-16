@@ -27,19 +27,20 @@ function Some1(i,x) {
     i.sorted=0
   } else {
     if (i.n == i.max) 
-      i.sorted = asort(i.has)
+      sorted(i)
     if (rand() < i.max/i.n)
       i.has[ binChop(i.has,x) ] = x }
 }
 function SomeDiff(a,b,  
-                  la,lb,j,x,lo,hi,gt,lt) {
+                  n,la,lb,j,x,lo,hi,gt,lt) {
   la = sorted(a)
   lb = sorted(b)
+  n  = l(b.has)
   for(j in a.has) {
     x  = a.has[j]
     lo = hi= binChop(b.has, x)
-    while(lo >= 1 && b.has[lo] == x) lo--
-    while(hi <= n && b.has[hi] == x) hi++
+    while(lo > 1 && b.has[lo] == x) lo--
+    while(hi < n && b.has[hi] == x) hi++
     gt += lb - hi 
     lt += lo
   }
@@ -51,9 +52,12 @@ function sorted(i)  {
     i.sorted=asort(i.has) 
   return length(i.has)
 }
-function at(i,z)      { if(!i.sorted) sorted(i);  return i.has[int(z)] }
+function at(i,z)      { 
+  if(!i.sorted) sorted(i)
+  return i.has[int(z)] 
+}
 function per(i,j,k,p) { return at(i,j + p*(k-j))   }
-function mid(i,j,k)   { return at(i,j + .5*(k-j) ) }
+function mid(i,j,k)   { return per(i,j,k,0.5) }
 function sd(i,j,k)    {
   return abs(per(i,j,k,.9) - per(i,j,k,.1))/i.magic 
 }
@@ -62,4 +66,3 @@ function xpect(i,j,m,k,   n) {
   return (m-j)/n*sd(i,j,m) + (k-m -1)/n*sd(i,m+1,k) 
 }
 
-BEGIN { Some(i); argv(i); oo(i)}

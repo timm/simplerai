@@ -1,10 +1,4 @@
-# vim: nospell ts=2 sw=2 sts=2  et :
-
-function rogues(    s) {
-  for(s in SYMTAB) {
-     if (s ~ /^[A-Z][a-z]/) print "Global " s
-     if (s ~ /^[_a-z]/    ) print "Rogue: " s }
-}
+# vim: filetype=awk nospell ts=2 sw=2 sts=2  et :
 
 function tests(what, all,   one,a,i,n) {
   n = split(all,a,",")

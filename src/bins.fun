@@ -13,26 +13,14 @@ cat | clean | cols | ranges | super | rows | cluster | privitize | contrast
 
 repeat the above without super 
 
-function Bins0(i) {
-  if (!i.data) {
-    List(i)
-    i.data    = "data/weather" DOT "csv"
-    i.sep     = ","
-    i.step    = FUN.bins.step # 0.5
-    i.max     = FUN.some.max  # 256
-    i.magic   = FUN.some.magic # 2.56
-    i.cohen   = FUN.stats.cohen.small # 0.3
-    i.trivial = FUN.trivial } # 1.02
-}
-
 -----------------------
 # some extensions to the basic table stuff
 function TableChop(i,   c) {
   for(c in i.nums)  
     TableChop1(i,c,i.nums[c]) 
 }
-function TableChop1(i,c,some,    r,cutter,cut,x,rs) {
-  Cuts(cutter,some)
+function TableChop1(i,c,some,    r,cut,x,rs) {
+  Cuts(some) # sets some.cuts to some useful thresholds
   rs  = l(i.rows)
   cut = 1
   cellsort(i.rows, c)
@@ -45,59 +33,52 @@ function TableChop1(i,c,some,    r,cutter,cut,x,rs) {
       i.rows[r].cells[c] = some.cuts[cut]  }}
 }
 ---------------------
+function Cuts(some,     i) {
+  Cuts0(i,some)
+  sorted(some)
+  has(some,"cuts")
+  Cutting(i,some)
+}
 function Cuts0(i,some,    n) {
   if (!i.cohen) {
     List(i)
+    i.cohen   = FUN.stats.cohen.small
+    i.trivial = FUN.trivial 
     n         = l(some.has)
-    i.cohen   = G.cohen
-    i.start   = at(some,1)
-    i.stop    = at(some,n)
-    i.step    = int(n^G.step)
-    i.trivial = G.trivial 
+    i.step    = int(n^FUN.bins.step)
     i.epsilon = sd(some,1, n )*i.cohen }
 }
-
-function Cuts(i,some,lo,hi,       
-               j,cut,min,now,after,new) {
-  Cuts0(i,some)
-  lo = lo ? lo : 1
-  hi = hi ? hi : l(some.has)
+function Cutting(i,some,lo,hi,       
+               j,cut,min,now,after,new,start,stop) {
+  lo    = lo ? lo : 1
+  hi    = hi ? hi : l(some.has)
+  start = first(some.has)
+  stop  = last(some.has)
   if (hi - lo > i.step) {
-    min  = sd(some,lo,hi)
+    min = sd(some,lo,hi)
     for(j = lo + i.step; j<=hi-i.step; j++) {
       now =  at(some,j)
       after = at(some,j+1)
       if (now != after && 
-          after - i.start > i.epsilon && 
-          i.stop - now    > i.epsilon &&
+          after - start > i.epsilon && 
+          stop - now    > i.epsilon &&
           mid(some,j+1,hi) - mid(some,lo,j) > i.epsilon && 
-          min > (new = xpect(some,lo,j,hi)) * i.trivial) {
-            min = new
-            cut = j }}}
+          min > (new = xpect(some,lo,j,hi)) * i.trivial) 
+         # then
+         { min = new
+           cut = j }}}
   if (cut) {
-    Cuts(i,some,lo,    cut)
-    Cuts(i,some,cut+1, hi)
+    Cutting(i, some, lo,    cut)
+    Cutting(i, some, cut+1, hi)
   } else 
     some.cuts[l(some.cuts)+1] = some.has[hi] 
 }
 ---------------------
-function binsMain( t) { 
-   Bins(G); argv(G); FS=G.sep 
+function binsMain( t,c) { 
    Table(t)
-   TableRead(t,G.data)
+   TableRead(t) #  reads from stdin
    TableChop(t)
+   for(c in t.nums)  
+     oo(t.nums[c].cuts,"# " c " ")
    TableDump(t)
-   rogues()
 }
-function cellsort(lst,k) { 
-  SORT=k; return asort(lst,lst,"cellcompare") 
-}
-function cellcompare(i1,v1,i2,v2,  l,r) {
-  l = v1["cells"][SORT]
-  r = v2["cells"][SORT]
-  if (l < r) return -1
-  if (l == r) return 0
-  return 1 
-}
-
-BEGIN { binsMain() }

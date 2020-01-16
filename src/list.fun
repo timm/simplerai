@@ -1,11 +1,14 @@
 #!/usr/bin/env ../fun
-# vim: nospell ts=2 sw=2 sts=2  et :
+# vim: filetype=awk nospell ts=2 sw=2 sts=2  et :
 
 function l(a) { return length(a) }
 
-function o(a,t   ,x,s,sep) {
+function first(a) { return a[   1] }
+function last(a)  { return a[length(a)] }
+
+function cat(a,   x,s,sep) {
   for(x in a) {
-    s= s sep  t"["x"]="a[x]; sep=", " }
+    s= s sep a[x];  sep=", " }
   return s
 }
 
@@ -36,11 +39,11 @@ function ooSortOrder(x, i) {
 }
 
 function ksort(lst,k) { 
-  SORT=k; return asort(lst,lst,"kcompare") 
+  KSORT=k; return asort(lst,lst,"kcompare") 
 }
 function kcompare(i1,v1,i2,v2,  l,r) {
-  l = v1[SORT] +0
-  r = v2[SORT] +0
+  l = v1[KSORT] +0
+  r = v2[KSORT] +0
   if (l < r) return -1
   if (l == r) return 0
   return 1 

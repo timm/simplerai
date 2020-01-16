@@ -2,7 +2,20 @@
 # vim: filetype=awk ts=2 sw=2 sts=2  et :
 
 @include "lib"
-@include "some"
+@include "table"
+@include "num"
+@include "sym"
+
+function NumDec(i,v,    d) 
+  if (v == "?") return v 
+  if (i.n == 1) return v 
+  i.n  -= 1
+  d     = x - i.mu
+  i.mu -= d/i.n
+  i.m2 -= d*(v- i.mu)
+  NumSd(i)
+  return v
+}
 
 function Super(i) {
   i.data = "data/weather" DOT "csv"

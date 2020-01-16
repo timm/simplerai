@@ -39,6 +39,13 @@ lib() { cat <<-EOF
   function zap(i,k)         { i[k][0]; List(i[k])} 
   function List(i)          { split("",i,"") }
   function Object(i)        { List(i); i["oid"]=++OID }
+
+  function rogues(    s) {
+    for(s in SYMTAB) {
+      if (s ~ /^[A-Z][a-z]/) print "Global " s
+      if (s ~ /^[_a-z]/    ) print "Rogue: " s }
+  }
+
 EOF
 }
 fun2awk() { gawk '
@@ -83,13 +90,18 @@ Out=$Bin/$Stem
  lib 
  fun2awk $1
  Main=${Stem}Main
- echo 'BEGIN { if("'${Main}'" in FUNCTAB) '${Main}'()}'
+ echo 'BEGIN { if("'${Main}'" in FUNCTAB) {'${Main}'(); rogues()}}'
 ) > $Out
 
 chmod +x $Out
 
-shift
-if    [ ! -t 0 ]
-then  cat - |  $Out $*
-else  $Out $*
+if [ "$2" ==  "make" ]
+then 
+  true
+else
+  shift
+  if    [ ! -t 0 ]
+  then  cat - |  $Out $*
+  else  $Out $*
+  fi
 fi

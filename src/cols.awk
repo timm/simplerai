@@ -6,7 +6,6 @@ NR == 1    { Want=NF
              for(i=1;i<=NF;i++)
                if ($i !~ /\?/)
                  use[++n]= i;
-             print "want" Want
            }
 NF == Want { s = $use[1]
              for(i=2;i<=n;i++) s = s "," $use[i] 

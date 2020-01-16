@@ -17,14 +17,15 @@ function cliffsDeltaSlow(a,b,    tmp,la,lb,x,y,j,k,gt,lt) {
   #printf("%s ","a "la" b "lb" lt "lt" gt "gt" tmp "tmp)
   return 0.147 < tmp
 }
-function cliffsDeltaFaster(a,b,   tmp,j,la,lb,n,x,lo,hi,gt,lt) {
+function cliffsDeltaFaster(a,b,   n,tmp,j,la,lb,x,lo,hi,gt,lt) {
   la = sorted(a)
   lb = sorted(b)
+  n= l(b.has)
   for(j in a.has) {
     x= a.has[j]
     lo= hi= binChop(b.has, x)
-    while(lo >= 1 && b.has[lo] == x) lo--
-    while(hi <= n && b.has[hi] == x) hi++
+    while(lo > 1 && b.has[lo] == x) lo--
+    while(hi < n && b.has[hi] == x) hi++
     gt += lb - hi 
     lt += lo
   }
@@ -43,7 +44,6 @@ function cliffsDeltaFastest(a,b,s,   a1,la,j) {
   return cliffsDeltaFaster(a1,b)
 }
 
-function gauss(m,s) { return m + s*z() }
 function demo(n,r,   m1,s1, m2,s2,a,b,k,z) {
    srand(1)
    Some(a)

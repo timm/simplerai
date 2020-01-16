@@ -38,3 +38,15 @@ function Row(i,lst,t,     x,c) {
          Some1(t.nums[c], x) }
       i.cells[c] = x }}
 }
+function cellsort(lst,k) { 
+  CELLSORT=k; return asort(lst,lst,"cellcompare") 
+}
+function cellcompare(i1,v1,i2,v2,  l,r) {
+  l = v1.cells[CELLSORT]
+  r = v2.cells[CELLSORT]
+  if (l < r) return -1
+  if (l == r) return 0
+  return 1 
+}
+
+
