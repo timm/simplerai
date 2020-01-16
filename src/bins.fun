@@ -14,13 +14,15 @@ cat | clean | cols | ranges | super | rows | cluster | privitize | contrast
 repeat the above without super 
 
 function Bins0(i) {
-  i.data = "data/weather" DOT "csv"
-  i.sep  = ","
-  i.step = 0.5
-  i.max = 256
-  i.magic = 2.56
-  i.cohen = 0.3
-  i.trivial = 0.3
+  if (!i.data) {
+    List(i)
+    i.data    = "data/weather" DOT "csv"
+    i.sep     = ","
+    i.step    = FUN.bins.step # 0.5
+    i.max     = FUN.some.max  # 256
+    i.magic   = FUN.some.magic # 2.56
+    i.cohen   = FUN.stats.cohen.small # 0.3
+    i.trivial = FUN.trivial } # 1.02
 }
 
 -----------------------
@@ -30,7 +32,6 @@ function TableChop(i,   c) {
     TableChop1(i,c,i.nums[c]) 
 }
 function TableChop1(i,c,some,    r,cutter,cut,x,rs) {
-  Cuts0(cutter, some)
   Cuts(cutter,some)
   rs  = l(i.rows)
   cut = 1
@@ -45,18 +46,20 @@ function TableChop1(i,c,some,    r,cutter,cut,x,rs) {
 }
 ---------------------
 function Cuts0(i,some,    n) {
-  Object(i)
-  n         = l(some.has)
-  i.cohen   = G.cohen
-  i.start   = at(some,1)
-  i.stop    = at(some,n)
-  i.step    = int(n^G.step)
-  i.trivial = G.trivial 
-  i.epsilon = sd(some,1, n )*i.cohen
+  if (!i.cohen) {
+    List(i)
+    n         = l(some.has)
+    i.cohen   = G.cohen
+    i.start   = at(some,1)
+    i.stop    = at(some,n)
+    i.step    = int(n^G.step)
+    i.trivial = G.trivial 
+    i.epsilon = sd(some,1, n )*i.cohen }
 }
 
 function Cuts(i,some,lo,hi,       
                j,cut,min,now,after,new) {
+  Cuts0(i,some)
   lo = lo ? lo : 1
   hi = hi ? hi : l(some.has)
   if (hi - lo > i.step) {
