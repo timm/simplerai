@@ -1,5 +1,5 @@
 ---
-title: libok.fun
+title: num.fun
 ---
 
 <button class="button button1"><a href=/fun/index>home</a></button>
@@ -11,28 +11,36 @@ title: libok.fun
 @include "lib.fun"
 
 ```awk
-function Demo(i) {
-  Object(i)
-  i.aaa = 10
-  i.bbb = "no"
-  i.ccc = "where" FUN.dot "csv"
+function Num(i) {
+  List(i)
+  i.n  = i.mu = i.m2 = i.sd = 0
+  i.lo = 10^32
+  i.hi = -1*i.lo
 }
 ```
 
 ```awk
-function libargs(w,   i,j) {
-  Demo(i)
-  argv(i)
-  for(j in ARGV) print j, ARGV[j]
-  oo(i)
-  is(w, typeof(i.aaa),"number")
-  is(w, typeof(i.bbb),"string")
+function Num1(i,v,    d) {
+  if (v==FUN.skip) return v
+  v += 0
+  i.n++
+  i.lo  = v < i.lo ? v : i.lo
+  i.hi  = v > i.hi ? v : i.hi
+  d     = v - i.mu
+  i.mu += d/i.n
+  i.m2 += d*(v - i.mu)
+  NumSd(i)
+  return v
 }
 ```
 
 ```awk
-function libokMain() { 
-  tests("libok","libargs") 
+function NumSd(i) {
+  if (i.m2 < 0) return 0
+  if (i.n < 2)  return 0
+  i.sd =   (i.m2/(i.n - 1))^0.5
+  return i.sd
 }
 ```
+
 

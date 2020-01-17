@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
-Stem=$(basename $1 ".fun")
-
-Docs=$HOME/opt/fun/docs
-mkdir -p  $Docs
-
 fun2md()  { 
   a="</button>"
   b="<button class=\"button button1\">"
   c="<button class=\"button button2\">"
   cat <<-EOF
+	---
+	title: $1
+	---
+
 	$b<a href=/fun/index>home</a>$a
 	$c<a href=/fun/INSTALL>install</a>$a
 	$b<a href=/fun/ABOUT>doc</a>$a
@@ -27,4 +26,11 @@ fun2md()  {
                            { print $0 } '
 }
 
-cat $1 | fun2md $1 > $Docs/$Stem.md
+Docs=$HOME/opt/fun/docs
+mkdir -p  $Docs
+
+for f in $*; do
+  Stem=$(basename $f ".fun")
+  echo "$f ==> $Docs/$Stem.md"
+  cat $f | fun2md $f > $Docs/$Stem.md
+done

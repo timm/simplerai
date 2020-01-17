@@ -228,10 +228,11 @@ bashrc() { cat<<-'EOF'
 	f()  { $root/fun $1.fun $*; }
         publish() {
 		( cd $root/src
-		  for i in *.md; do $root/md $i; done
- 		  cp $HOME/opt/fun/docs/*.md $root/docs
-		  git add $root/docs/*
-		)
+		  $root/md *.fun
+                )
+ 		cp $HOME/opt/fun/docs/*.md $root/docs
+		git add $root/docs/*
+		put
 	}
 		
 		 

@@ -1,5 +1,5 @@
 ---
-title: lib.fun
+title: sym.fun
 ---
 
 <button class="button button1"><a href=/fun/index>home</a></button>
@@ -8,8 +8,6 @@ title: lib.fun
 <button class="button button2"><a href=http://github.com/timm/fun/issues>discuss</a></button>
 <button class="button button1"><a href=/fun/LICENSE>license</a></button>
 
-@include "fun.fun"
-@include "list.fun"
-@include "math.fun"
-@include "os.fun"
-@include "test.fun"
+@include "lib.fun"
+
+

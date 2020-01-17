@@ -1,3 +1,7 @@
+---
+title: table.fun
+---
+
 <button class="button button1"><a href=/fun/index>home</a></button>
 <button class="button button2"><a href=/fun/INSTALL>install</a></button>
 <button class="button button1"><a href=/fun/ABOUT>doc</a></button>
@@ -57,4 +61,22 @@ function Row(i,lst,t,     x,c) {
       i.cells[c] = x }}
 }
 ```
+
+```awk
+function cellsort(lst,k) { 
+  CELLSORT=k; return asort(lst,lst,"cellcompare") 
+}
+```
+
+```awk
+function cellcompare(i1,v1,i2,v2,  l,r) {
+  l = v1.cells[CELLSORT]
+  r = v2.cells[CELLSORT]
+  if (l < r) return -1
+  if (l == r) return 0
+  return 1 
+}
+```
+
+
 

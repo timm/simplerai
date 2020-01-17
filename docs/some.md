@@ -1,3 +1,7 @@
+---
+title: some.fun
+---
+
 <button class="button button1"><a href=/fun/index>home</a></button>
 <button class="button button2"><a href=/fun/INSTALL>install</a></button>
 <button class="button button1"><a href=/fun/ABOUT>doc</a></button>
@@ -37,7 +41,7 @@ function Some1(i,x) {
     i.sorted=0
   } else {
     if (i.n == i.max) 
-      i.sorted = asort(i.has)
+      sorted(i)
     if (rand() < i.max/i.n)
       i.has[ binChop(i.has,x) ] = x }
 }
@@ -45,14 +49,15 @@ function Some1(i,x) {
 
 ```awk
 function SomeDiff(a,b,  
-                  la,lb,j,x,lo,hi,gt,lt) {
+                  n,la,lb,j,x,lo,hi,gt,lt) {
   la = sorted(a)
   lb = sorted(b)
+  n  = l(b.has)
   for(j in a.has) {
     x  = a.has[j]
     lo = hi= binChop(b.has, x)
-    while(lo >= 1 && b.has[lo] == x) lo--
-    while(hi <= n && b.has[hi] == x) hi++
+    while(lo > 1 && b.has[lo] == x) lo--
+    while(hi < n && b.has[hi] == x) hi++
     gt += lb - hi 
     lt += lo
   }
@@ -70,13 +75,17 @@ function sorted(i)  {
 ```
 
 ```awk
-function at(i,z)      { if(!i.sorted) sorted(i);  return i.has[int(z)] }
+function at(i,z)      { 
+  if(!i.sorted) sorted(i)
+  return i.has[int(z)] 
+}
 ```
+
 ```awk
 function per(i,j,k,p) { return at(i,j + p*(k-j))   }
 ```
 ```awk
-function mid(i,j,k)   { return at(i,j + .5*(k-j) ) }
+function mid(i,j,k)   { return per(i,j,k,0.5) }
 ```
 ```awk
 function sd(i,j,k)    {
@@ -92,6 +101,3 @@ function xpect(i,j,m,k,   n) {
 ```
 
 
-```awk
-BEGIN { Some(i); argv(i); oo(i)}
-```

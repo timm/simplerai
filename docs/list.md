@@ -1,3 +1,7 @@
+---
+title: list.fun
+---
+
 <button class="button button1"><a href=/fun/index>home</a></button>
 <button class="button button2"><a href=/fun/INSTALL>install</a></button>
 <button class="button button1"><a href=/fun/ABOUT>doc</a></button>
@@ -9,9 +13,16 @@ function l(a) { return length(a) }
 ```
 
 ```awk
-function o(a,t   ,x,s,sep) {
+function first(a) { return a[   1] }
+```
+```awk
+function last(a)  { return a[length(a)] }
+```
+
+```awk
+function cat(a,   x,s,sep) {
   for(x in a) {
-    s= s sep  t"["x"]="a[x]; sep=", " }
+    s= s sep a[x];  sep=", " }
   return s
 }
 ```
@@ -54,14 +65,14 @@ function ooSortOrder(x, i) {
 
 ```awk
 function ksort(lst,k) { 
-  SORT=k; return asort(lst,lst,"kcompare") 
+  KSORT=k; return asort(lst,lst,"kcompare") 
 }
 ```
 
 ```awk
 function kcompare(i1,v1,i2,v2,  l,r) {
-  l = v1[SORT] +0
-  r = v2[SORT] +0
+  l = v1[KSORT] +0
+  r = v2[KSORT] +0
   if (l < r) return -1
   if (l == r) return 0
   return 1 
