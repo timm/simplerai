@@ -9,10 +9,10 @@ fun2md()  {
 	title: $1
 	---
 
-	$b<a href="/simpleai/index>home"</a>$a
-	$c<a href="/simpleai/INSTALL>install"</a>$a
-	$b<a href="/simpleai/ABOUT>doc"</a>$a
-	$c<a href="http://github.com/timm/simpleai/issues>discuss"</a>$a
+	$b<a href="/simpleai/index>home">home</a>$a
+	$c<a href="/simpleai/INSTALL>install">install</a>$a
+	$b<a href="/simpleai/ABOUT>doc">about</a>$a
+	$c<a href="http://github.com/timm/simpleai/issues>discuss">discuss</a>$a
 	$b<a href="/simpleai/LICENSE">license</a>$a
 	EOF
   
@@ -21,6 +21,7 @@ fun2md()  {
  /^#!/     {next}
   NR==1                    { print "\n# '$1'\n"; next }
   /^}/                     { print; print "```\n";  next }
+  /^@include/              { print "```awk"; print; print "```"; next }
   /^(func|BEGIN|END).*}$/  { print "```awk"; print; print "```"; next }
   /^(func|BEGIN|END)/      { print "```awk"; print; next }
                            { print $0 } '

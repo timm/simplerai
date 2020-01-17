@@ -2,14 +2,18 @@
 title: cliffok.fun
 ---
 
-<button class="button button1"><a href="/simpleai/index>home"</a></button>
-<button class="button button2"><a href="/simpleai/INSTALL>install"</a></button>
-<button class="button button1"><a href="/simpleai/ABOUT>doc"</a></button>
-<button class="button button2"><a href="http://github.com/timm/simpleai/issues>discuss"</a></button>
+<button class="button button1"><a href="/simpleai/index>home">home</a></button>
+<button class="button button2"><a href="/simpleai/INSTALL>install">install</a></button>
+<button class="button button1"><a href="/simpleai/ABOUT>doc">about</a></button>
+<button class="button button2"><a href="http://github.com/timm/simpleai/issues>discuss">discuss</a></button>
 <button class="button button1"><a href="/simpleai/LICENSE">license</a></button>
 
+```awk
 @include "lib.fun"
+```
+```awk
 @include "some.fun"
+```
 
 ```awk
 function cliffsDeltaSlow(a,b,    tmp,la,lb,x,y,j,k,gt,lt) {
