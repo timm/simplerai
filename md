@@ -9,11 +9,11 @@ fun2md()  {
 	title: $1
 	---
 
-	$b<a href=/fun/index>home</a>$a
-	$c<a href=/fun/INSTALL>install</a>$a
-	$b<a href=/fun/ABOUT>doc</a>$a
-	$c<a href=http://github.com/timm/fun/issues>discuss</a>$a
-	$b<a href=/fun/LICENSE>license</a>$a
+	$b<a href="/simpleai/index>home"</a>$a
+	$c<a href="/simpleai/INSTALL>install"</a>$a
+	$b<a href="/simpleai/ABOUT>doc"</a>$a
+	$c<a href="http://github.com/timm/simpleai/issues>discuss"</a>$a
+	$b<a href="/simpleai/LICENSE">license</a>$a
 	EOF
   
   gawk '
