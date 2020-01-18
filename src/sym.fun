@@ -27,7 +27,7 @@ function SymEnt(i,    k,p) {
     i.ent = 0
     for (k in i.all) {
       p = i.all[k] / i.n
-      i.ent += p*log(p)/log(2) }
+      i.ent -= p*log(p)/log(2) }
   return i.ent
 }
 function SymDec(i,v,   d) {

@@ -32,9 +32,10 @@ copyleft() { cat<<'EOF'
 EOF
 }
 lib() { cat <<-EOF
-  function has( i,k,f)      { f=f?f:"List"; zap(i,k); @f(i[k]) }
-  function hass(i,k,f,m)    {               zap(i,k); @f(i[k],m) }
-  function hasss(i,k,f,m,n) {               zap(i,k); @f(i[k],m,n) }
+  function has(   i,k,f)       { f=f?f:"List"; zap(i,k); @f(i[k]) }
+  function hass(  i,k,f,m)     {               zap(i,k); @f(i[k],m) }
+  function hasss( i,k,f,m,n)   {               zap(i,k); @f(i[k],m,n) }
+  function hassss(i,k,f,m,n,o) {               zap(i,k); @f(i[k],m,n,o) }
   
   function zap(i,k)         { i[k][0]; List(i[k])} 
   function List(i)          { split("",i,"") }
@@ -85,7 +86,6 @@ File=${1##*/}
 Stem=${File%.*}
 Out=$Bin/$Stem
 
-echo "1 $1 stem $Stem"
 (echo "#!/usr/bin/env gawk -f"
  copyleft
  lib 

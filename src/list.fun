@@ -8,7 +8,8 @@ function last(a)  { return a[length(a)] }
 
 function cat(a,   x,s,sep) {
   for(x in a) {
-    s= s sep a[x];  sep=", " }
+    s= s sep a[x]
+    sep=", " }
   return s
 }
 
@@ -16,7 +17,7 @@ function copy(a,b, i) {
   for(i in a)
     if (isarray(a[i])) {
       has(b,i)
-      deepCopy(a[i],b[i]) 
+      copy(a[i],b[i]) 
     } else
      b[i] = a[i]
 }

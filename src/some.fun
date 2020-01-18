@@ -22,17 +22,18 @@ function Some(i,pos,txt,w) {
   i.n      = 0 
   i.w      = w?w:1
 }
-function Some1(i,x) {
-  if (x == "?") return
+function Some1(i,v) {
+  if (v == "?") return
   i.n++
   if (i.n < i.max) {
-    i.has[ l(i.has)+1 ] = x
+    i.has[ l(i.has)+1 ] = v
     i.sorted=0
   } else {
     if (i.n == i.max) 
       sorted(i)
     if (rand() < i.max/i.n)
-      i.has[ binChop(i.has,x) ] = x }
+      i.has[ binChop(i.has,v) ] = v }
+  return v
 }
 function SomeDiff(a,b,  
                   n,la,lb,j,x,lo,hi,gt,lt) {
