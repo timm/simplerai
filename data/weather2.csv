@@ -1,0 +1,15 @@
+outlook, $temperature, $humidity, windy, !play
+overcast, 69, 75, TRUE, no
+rainy, 69, 75, TRUE, no
+sunny, 69, 75, FALSE, no
+sunny, 72, 75, TRUE, yes
+overcast, 72, 75, FALSE, yes
+rainy, 72, 86, FALSE, yes
+rainy, 69, 86, FALSE, no
+sunny, 72, 86, FALSE, no
+overcast, 72, 86, FALSE, yes
+overcast, 72, 86, TRUE, yes
+sunny, 72, 86, TRUE, no
+sunny, 72, 86, FALSE, no
+rainy, 72, 86, FALSE, yes
+
