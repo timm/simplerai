@@ -1,88 +1,90 @@
 #!/usr/bin/env ./fun
 # vim: filetype=awk ts=2 sw=2 sts=2  et :
 
-@include "lib"
-@include "table"
-@include "num"
-@include "sym"
+@include "lib.fun"
+@include "table.fun"
+@include "num.fun"
+@include "sym.fun"
 
-function Super(i,col1,col2,new) {
-  i.trivial = Fun.trivial
-  i.x= col1
-  i.y= col2
-  i.ynew=new
+function Super(super,col1,col2,new) {
+  List(super)
+  super.trivial = Fun.trivial
+  super.x= col1
+  super.y= col2
+  super.ynew=new
   if (new=="Sym") {
-   i.add = "Sym1"; i.dec = "SymDec"; i.var = "SymEnt" 
+   super.add = "Sym1"; super.dec = "SymDec"; super.var = "SymEnt" 
   } else {
-   i.add = "Num1"; i.dec = "NumDec"; i.var = "NumSd"
+   super.add = "Num1"; super.dec = "NumDec"; super.var = "NumSd"
  }
 }
-function SuperY(i,r)      { return r.cells[i.y]   }
-function SuperX(i,r)      { return r.cells[i.x]   }
-function SuperXput(i,r,x) { return r.cells[i.x]=x }
+function SuperY(super,r)      { return r.cells[super.y]   }
+function SuperX(super,r)      { return r.cells[super.x]   }
+function SuperXput(super,r,x) { return r.cells[super.x]=x }
 
-function SuperYnew(i,j,   f) { f=i.new; @f(j) }
-function SuperYvar(i,j,   f) { f=i.var; @f(j) }
-function SuperYadd(i,j,r, f) { f=i.add; @f(j,SuperY(r)) }
-function SuperYdec(i,j,r, f) { f=i.dec; @f(j,SuperY(r)) }
+function SuperYnew(super,j,   f) { f=super.new; @f(j) }
+function SuperYvar(super,j,   f) { f=super.var; @f(j) }
+function SuperYadd(super,j,r, f) { f=super.add; @f(j,SuperY(r)) }
+function SuperYdec(super,j,r, f) { f=super.dec; @f(j,SuperY(r)) }
 
-function SuperGlue(t,x,y,what,
+function SuperGlue(table,x,y,what,
                    super,yall,j) {
+  # initialize a new "super" object
   Super(super,x,y,what)
   # initialize a tracker for "y"
   SuperYnew(super, yall) 
   # fill the tracker
-  for(j in t.rows) SuperYadd(super, yall, t.rows[j])
+  for(j in table.rows) SuperYadd(super, yall, table.rows[j])
   # sort table on the 'x' vaues
-  cellsort(t.rows, x)
+  cellsort(table.rows, x)
   # see if we can combine any of the 'x' ranges
-  SuperGlue1(super,t.rows, 1, l(t.rows), yall)
+  SuperGlue1(super,table.rows, 1, l(table.rows), yall)
 }
  
-function SuperGlue1(i,a,lo,hi,right0,
+function SuperGlue1(super,a,lo,hi,right0,
                    right,left,min,j,after,now,cut,v) {
-  deepCopy(right0, right)
-  SuperYnew(i,left)
+  copy(right0, right)
+  SuperYnew(super,left)
   min = SuperVar(right)
   for(j=lo; j<hi; j++)  {
-    after = SuperX(i,a[j+1])
-    now   = SuperX(i,a[j])
-    SuperYadd(i,left,  a[j])
-    SuperYdec(i,right, a[j])
+    after = SuperX(super,a[j+1])
+    now   = SuperX(super,a[j])
+    SuperYadd(super,left,  a[j])
+    SuperYdec(super,right, a[j])
     if ((now   != FUN.skip) &&
         (now   != after)    &&
-        min > (new = SuperYxpect(i,left,right) * i.trivial))
+        min > (new = SuperYxpect(super,left,right) * super.trivial))
       { min = new
         cut = j 
-        deepCopy(left,  left1)
-        deepCopy(right, right1) }
+        copy(left,  left1)
+        copy(right, right1) }
     }
   if (cut) {
-    SuperGlue1(i,a,lo,   cut,left1)
-    SuperGlue1(i,a,cut+1,hi, right1)
+    SuperGlue1(super,a,lo,   cut,left1)
+    SuperGlue1(super,a,cut+1,hi, right1)
   } else {
     for(j=lo;j<=hi;j++) {
       if(v==FUN.skip)  continue
-      v=v?v: SuperX(i,a[j])
-      SuperXput(i,a[j], v) }
+      v=v?v: SuperX(super,a[j])
+      SuperXput(super,a[j], v) }
   }
 }
-function SuperYxpect(i,a,b) {
-  return (a.n*SuperYvar(i,a) + b.n*SuperYvar(i,b)
-         ) / (a.n + b.n)
+function SuperYxpect(super,a,b) {
+  return (a.n*SuperYvar(super,a) + b.n*SuperYvar(super,b))\
+         / (a.n + b.n)
 } 
 -------------------------
-function TableGlue(t,y,what,) {
-  y = y?y:t.klass
+function TableGlue(table,y,what) {
+  y = y?y:table.klass
   if (!what)
-    what = y in t.nums : "Num" ? "Sym" 
-  for(x in t.nums)  
-    SuperGlue(t,x,y,what)
+    what = y in table.nums ? "Num" : "Sym" 
+  for(x in table.nums)  
+    SuperGlue(table,x,y,what)
 }
-function superMain(i,  t, what) {
-  Table(t)
-  TableRead(t)
-  TableGlue(t)
-  TableDump(t)
+function superMain(   table) {
+  Table(table)
+  TableRead(table)
+  TableGlue(table)
+  TableDump(table)
 }
   

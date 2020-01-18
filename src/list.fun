@@ -12,9 +12,9 @@ function cat(a,   x,s,sep) {
   return s
 }
 
-function deepCopy(a,b, i) {
+function copy(a,b, i) {
   for(i in a)
-    if (isarray(a[i]) {
+    if (isarray(a[i])) {
       has(b,i)
       deepCopy(a[i],b[i]) 
     } else
@@ -45,9 +45,8 @@ function ooSortOrder(x, i) {
     return PROCINFO["sorted_in"] = \
       typeof(i + 1)=="number" ? "@ind_num_asc" : "@ind_str_asc" 
 }
-
 function ksort(lst,k) { 
-  FUN.SORT.K=k; return asort(lst,lst,"kcompare") 
+  FUN.SORT.K=k; return asort(lst,lst,"kcompare")
 }
 function kcompare(i1,v1,i2,v2,  l,r) {
   l = v1[FUN.SORT.K] +0

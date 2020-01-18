@@ -30,7 +30,7 @@ function NumSd(i) {
   i.sd = (i.m2/(i.n - 1))^0.5
   return i.sd
 }
-function NumDec(i,v,    d) 
+function NumDec(i,v,    d)  {
   if (v == "?") return v 
   if (i.n == 0) return v 
   i.n  -= 1

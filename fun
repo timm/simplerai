@@ -85,6 +85,7 @@ File=${1##*/}
 Stem=${File%.*}
 Out=$Bin/$Stem
 
+echo "1 $1 stem $Stem"
 (echo "#!/usr/bin/env gawk -f"
  copyleft
  lib 
