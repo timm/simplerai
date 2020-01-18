@@ -6,119 +6,83 @@
 @include "num"
 @include "sym"
 
-function NumDec(i,v,    d) 
-  if (v == "?") return v 
-  if (i.n == 1) return v 
-  i.n  -= 1
-  d     = x - i.mu
-  i.mu -= d/i.n
-  i.m2 -= d*(v- i.mu)
-  NumSd(i)
-  return v
+function Super(i,col1,col2,new) {
+  i.trivial = Fun.trivial
+  i.x= col1
+  i.y= col2
+  i.ynew=new
+  if (new=="Sym") {
+   i.add = "Sym1"; i.dec = "SymDec"; i.var = "SymEnt" 
+  } else {
+   i.add = "Num1"; i.dec = "NumDec"; i.var = "NumSd"
+ }
 }
+function SuperY(i,r)      { return r.cells[i.y]   }
+function SuperX(i,r)      { return r.cells[i.x]   }
+function SuperXput(i,r,x) { return r.cells[i.x]=x }
 
-function Super(i) {
-  i.data = "data/weather" DOT "csv"
-  i.sep  = ","
-  i.step = 0.5
-  i.max = 256
-  i.magic = 2.56
-  i.cohen = 0.3
-  i.trivial = 0.3
-}
--------------------------
-function Table(i) {
-  Object(i)
-  has(i,"rows")
-  has(i,"names")
-  has(i,"nums") 
-}
-function TableRead(i,f) { lines(i,f, "Table1") }
+function SuperYnew(i,j,   f) { f=i.new; @f(j) }
+function SuperYvar(i,j,   f) { f=i.var; @f(j) }
+function SuperYadd(i,j,r, f) { f=i.add; @f(j,SuperY(r)) }
+function SuperYdec(i,j,r, f) { f=i.dec; @f(j,SuperY(r)) }
 
-function Table1(i,r,lst,      c,x) {
-  if (r>1)  
-    return hasss(i.rows,r-1,"Row",lst,i)
-  for(c in lst)  {
-    x = i.names[c] = lst[c]
-    if (x ~ /[\$<>]/) 
-      hass(i.nums,c,"Some",c) }
+function SuperGlue(t,x,y,what,
+                   super,yall,j) {
+  Super(super,x,y,what)
+  # initialize a tracker for "y"
+  SuperYnew(super, yall) 
+  # fill the tracker
+  for(j in t.rows) SuperYadd(super, yall, t.rows[j])
+  # sort table on the 'x' vaues
+  cellsort(t.rows, x)
+  # see if we can combine any of the 'x' ranges
+  SuperGlue1(super,t.rows, 1, l(t.rows), yall)
 }
-function TableDump(i,   r) {
-  print(cat(i.names))
-  for(r in i.rows)
-    print(cat(i.rows[r].cells)) 
-}
-function TableChop(i,   c) {
-  for(c in i.nums)  
-    TableChop1(i,c,i.nums[c]) 
-}
-function TableChop1(i,c,some,    r,cutter,cut,x,rs) {
-  Cuts(cutter, some)
-  CutsUp(cutter,some)
-  rs  = l(i.rows)
-  cut = 1
-  cellsort(i.rows, c)
-  for(r=1; r<=rs; r++)  {
-    x = i.rows[r].cells[c]
-    if (x != "?") {
-      if (x > some.cuts[cut]) 
-        if (cut< l(some.cuts) -1 )
-          cut++
-      i.rows[r].cells[c] = some.cuts[cut]  }}
-}
-_______________________________
-function Row(i,lst,t,     x,c) {
-  Object(i)
-  has(i,"cells")
-  for(c in t.names) {
-    x = lst[c]
-    if (x != "?") {
-      if (c in t.nums) {
-         x += 0
-         Some1(t.nums[c], x) }
-      i.cells[c] = x }}
-}
----------------------
-function Cuts(i,some,    n) {
-  Object(i)
-  n         = l(some.has)
-  i.cohen   = G.cohen
-  i.start   = at(some,1)
-  i.stop    = at(some,n)
-  i.step    = int(n^G.step)
-  i.trivial = G.trivial 
-  i.epsilon = sd(some,1, n )*i.cohen
-}
-
-function CutsUp(i,some,lo,hi,       
-               j,cut,min,now,after,new) {
-  lo = lo ? lo : 1
-  hi = hi ? hi : l(some.has)
-  if (hi - lo > i.step) {
-    min  = sd(some,lo,hi)
-    for(j = lo + i.step; j<=hi-i.step; j++) {
-      now =  at(some,j)
-      after = at(some,j+1)
-      if (now != after && 
-          after - i.start > i.epsilon && 
-          i.stop - now    > i.epsilon &&
-          mid(some,j+1,hi) - mid(some,lo,j) > i.epsilon && 
-          min > (new = xpect(some,lo,j,hi)) * i.trivial) {
-            min = new
-            cut = j }}}
+ 
+function SuperGlue1(i,a,lo,hi,right0,
+                   right,left,min,j,after,now,cut,v) {
+  deepCopy(right0, right)
+  SuperYnew(i,left)
+  min = SuperVar(right)
+  for(j=lo; j<hi; j++)  {
+    after = SuperX(i,a[j+1])
+    now   = SuperX(i,a[j])
+    SuperYadd(i,left,  a[j])
+    SuperYdec(i,right, a[j])
+    if ((now   != FUN.skip) &&
+        (now   != after)    &&
+        min > (new = SuperYxpect(i,left,right) * i.trivial))
+      { min = new
+        cut = j 
+        deepCopy(left,  left1)
+        deepCopy(right, right1) }
+    }
   if (cut) {
-    CutsUp(i,some,lo,    cut)
-    CutsUp(i,some,cut+1, hi)
-  } else 
-    some.cuts[l(some.cuts)+1] = some.has[hi] 
+    SuperGlue1(i,a,lo,   cut,left1)
+    SuperGlue1(i,a,cut+1,hi, right1)
+  } else {
+    for(j=lo;j<=hi;j++) {
+      if(v==FUN.skip)  continue
+      v=v?v: SuperX(i,a[j])
+      SuperXput(i,a[j], v) }
+  }
 }
----------------------
-function binsMain( t) { 
-   Bins(G); argv(G); FS=G.sep 
-   Table(t)
-   TableRead(t,G.data)
-   TableChop(t)
-   TableDump(t)
-   rogues()
+function SuperYxpect(i,a,b) {
+  return (a.n*SuperYvar(i,a) + b.n*SuperYvar(i,b)
+         ) / (a.n + b.n)
+} 
+-------------------------
+function TableGlue(t,y,what,) {
+  y = y?y:t.klass
+  if (!what)
+    what = y in t.nums : "Num" ? "Sym" 
+  for(x in t.nums)  
+    SuperGlue(t,x,y,what)
 }
-BEGIN { binsMain() }
+function superMain(i,  t, what) {
+  Table(t)
+  TableRead(t)
+  TableGlue(t)
+  TableDump(t)
+}
+  

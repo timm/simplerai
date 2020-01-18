@@ -11,13 +11,16 @@ function Some0(i) {
     i.max   = FUN.some.max   # 256
     i.small = FUN.stats.cliffs.small} # 0.147
 }
-function Some(i,pos) {
+function Some(i,pos,txt,w) {
   Some0(i)
   has(i,"has")
   has(i,"cuts")
+  i.w = 1
   i.pos    = pos ? pos : 1
+  i.txt    = txt
   i.sorted = 0
   i.n      = 0 
+  i.w      = w?w:1
 }
 function Some1(i,x) {
   if (x == "?") return
