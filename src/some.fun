@@ -65,7 +65,7 @@ function mid(i,j,k)   { return per(i,j,k,0.5) }
 function sd(i,j,k)    {
   return abs(per(i,j,k,.9) - per(i,j,k,.1))/i.magic 
 }
-function xpect(i,j,m,k,   n) {
+function SomeXpect(i,j,m,k,   n) {
   n=k-j+1
   return (m-j)/n*sd(i,j,m) + (k-m -1)/n*sd(i,m+1,k) 
 }

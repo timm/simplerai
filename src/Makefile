@@ -7,7 +7,7 @@ PATH:=$(PATH):$B
 ok: dirs files
 
 dirs:; @mkdir -p $B
-files: $B/clean $B/cols $B/bins $B/super
+files: $B/clean $B/cols $B/bins $B/super $B/stats $B/dom 
 
 $B/% : %.awk; @../fun $< make
 $B/% : %.fun; @../fun $< make
@@ -32,3 +32,19 @@ super2: ok
 	@cat ../data/auto93.csv | clean | cols | bins | clean | super 
 super3: ok
 	@cat ../data/weather2.csv | super
+
+super4: ok
+	@cat ../data/nasa93dem.csv | clean | cols | dom | bins| clean | super | sort -t, -n -k 28
+
+dom1: ok
+	@echo "worst"
+	@$(MAKE) dom1Header dom1Prim  | head -11 | stats
+	@printf "\nbest\n"
+	@($(MAKE) dom1Header; $(MAKE) dom1Prim | tail -10)  | stats
+
+dom1Header: ;@echo "<effort,<defects,<months,!>dom"
+
+dom1Prim: ok        
+	@cat ../data/nasa93dem.csv | clean|cols | dom | grep -v "loc" | sort -t, -n -k 28 | cut -d, -f 25-
+
+

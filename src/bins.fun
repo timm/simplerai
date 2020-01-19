@@ -63,7 +63,7 @@ function Cutting(i,some,lo,hi,
           after - start > i.epsilon && 
           stop - now    > i.epsilon &&
           mid(some,j+1,hi) - mid(some,lo,j) > i.epsilon) 
-         { new= xpect(some,lo,j,hi)
+         { new= SomeXpect(some,lo,j,hi)
            if (min>  new *i.trivial) 
              { min = new
                cut = j }}}}
