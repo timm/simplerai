@@ -88,11 +88,11 @@ function Cutting(i,some,lo,hi,
       if (now != after && 
           after - start > i.epsilon && 
           stop - now    > i.epsilon &&
-          mid(some,j+1,hi) - mid(some,lo,j) > i.epsilon && 
-          min > (new = xpect(some,lo,j,hi)) * i.trivial) 
-         # then
-         { min = new
-           cut = j }}}
+          mid(some,j+1,hi) - mid(some,lo,j) > i.epsilon) 
+         { new= SomeXpect(some,lo,j,hi)
+           if (min>  new *i.trivial) 
+             { min = new
+               cut = j }}}}
   if (cut) {
     Cutting(i, some, lo,    cut)
     Cutting(i, some, cut+1, hi)
@@ -108,7 +108,7 @@ function binsMain( t,c) {
    TableRead(t) #  reads from stdin
    TableChop(t)
    for(c in t.nums)  
-     oo(t.nums[c].cuts,"# " c " ")
+     oo(t.nums[c].cuts,"## " c " ")
    TableDump(t)
 }
 ```

@@ -24,28 +24,32 @@ function Some0(i) {
 ```
 
 ```awk
-function Some(i,pos) {
+function Some(i,pos,txt,w) {
   Some0(i)
   has(i,"has")
   has(i,"cuts")
+  i.w = 1
   i.pos    = pos ? pos : 1
+  i.txt    = txt
   i.sorted = 0
   i.n      = 0 
+  i.w      = w?w:1
 }
 ```
 
 ```awk
-function Some1(i,x) {
-  if (x == "?") return
+function Some1(i,v) {
+  if (v == "?") return
   i.n++
   if (i.n < i.max) {
-    i.has[ l(i.has)+1 ] = x
+    i.has[ l(i.has)+1 ] = v
     i.sorted=0
   } else {
     if (i.n == i.max) 
       sorted(i)
     if (rand() < i.max/i.n)
-      i.has[ binChop(i.has,x) ] = x }
+      i.has[ binChop(i.has,v) ] = v }
+  return v
 }
 ```
 
@@ -96,7 +100,7 @@ function sd(i,j,k)    {
 ```
 
 ```awk
-function xpect(i,j,m,k,   n) {
+function SomeXpect(i,j,m,k,   n) {
   n=k-j+1
   return (m-j)/n*sd(i,j,m) + (k-m -1)/n*sd(i,m+1,k) 
 }

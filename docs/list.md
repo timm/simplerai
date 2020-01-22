@@ -22,11 +22,23 @@ function last(a)  { return a[length(a)] }
 ```awk
 function cat(a,   x,s,sep) {
   for(x in a) {
-    s= s sep a[x];  sep=", " }
+    s= s sep a[x]
+    sep=", " }
   return s
 }
 ```
 
+
+```awk
+function copy(a,b, i) {
+  for(i in a)
+    if (isarray(a[i])) {
+      has(b,i)
+      copy(a[i],b[i]) 
+    } else
+     b[i] = a[i]
+}
+```
 
 ```awk
 function binChop(a,x,           y,lo, hi,mid)  {
@@ -62,20 +74,38 @@ function ooSortOrder(x, i) {
 }
 ```
 
-
 ```awk
 function ksort(lst,k) { 
-  KSORT=k; return asort(lst,lst,"kcompare") 
+  FUN.SORT.K=k; return asort(lst,lst,"kcompare")
 }
 ```
 
 ```awk
 function kcompare(i1,v1,i2,v2,  l,r) {
-  l = v1[KSORT] +0
-  r = v2[KSORT] +0
+  l = v1[FUN.SORT.K] +0
+  r = v2[FUN.SORT.K] +0
   if (l < r) return -1
   if (l == r) return 0
   return 1 
 } 
 ```
+
+
+```awk
+function cellsort(lst,k) { 
+  FUN.SORT.CELL=k; return asort(lst,lst,"cellcompare") 
+}
+```
+
+```awk
+function cellcompare(i1,v1,i2,v2,  l,r) {
+  l = v1.cells[FUN.SORT.CELL]
+  r = v2.cells[FUN.SORT.CELL]
+  if (l < r) return -1
+  if (l == r) return 0
+  return 1 
+}
+```
+
+
 

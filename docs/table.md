@@ -9,6 +9,13 @@ title: table.fun
 <button class="button button1"><a href="/simpleai/LICENSE">license</a></button>
 
 ```awk
+@include "sym.fun"
+```
+```awk
+@include "some.fun"
+```
+
+```awk
 function Table0(i) {
   i.data = "data/weather" DOT "csv"
   i.sep  = ","
@@ -16,11 +23,15 @@ function Table0(i) {
 ```
 
 ```awk
-function Table(i) {
-  Object(i)
-  has(i,"rows")
-  has(i,"names")
-  has(i,"nums") 
+function Table(table) {
+  Object(table)
+  table.klass=""
+  has(table,"rows")
+  has(table,"names")
+  has(table,"goal")
+  has(table,"indep")
+  has(table,"nums") 
+  has(table,"syms") 
 }
 ```
 
@@ -29,54 +40,45 @@ function TableRead(i,f) { lines(i,f, "Table1") }
 ```
 
 ```awk
-function Table1(i,r,lst,      c,x) {
+function Table1(i,r,lst,      c,x, what,w) {
   if (r>1)  
     return hasss(i.rows,r-1,"Row",lst,i)
-  for(c in lst)  {
-    x = i.names[c] = lst[c]
-    if (x ~ /[\$<>]/) 
-      hass(i.nums,c,"Some",c) }
+  else {
+   for(c in lst)  {
+      x = i.names[c] = lst[c]
+      if (x ~  /!/)     i.klass=c
+      if (x ~  /</)     i.goal[c]
+      if (x ~  />/)     i.goal[c]
+      if (x !~ /[!<>]/) i.indep[c]
+      w = x ~  /</ ? -1: 1 
+      if (x ~  /[\$<>]/)
+        hassss(i.nums,c,"Some",c,x,w) 
+      else
+        hassss(i.syms,c,"Sym",c,x,w) }} 
 }
 ```
 
 ```awk
 function TableDump(i,   r) {
   print(cat(i.names))
-  for(r in i.rows)
-    print(cat(i.rows[r].cells)) 
+  for(r in i.rows) print(cat(i.rows[r].cells)) 
 }
 ```
 
 _______________________________
 ```awk
-function Row(i,lst,t,     x,c) {
+function Row(i,lst,table,     x,c) {
   Object(i)
   has(i,"cells")
-  for(c in t.names) {
+  for(c in table.names) {
     x = lst[c]
     if (x != "?") {
-      if (c in t.nums) {
-         x += 0
-         Some1(t.nums[c], x) }
+      if (c in table.nums)  {
+         x = Some1(table.nums[c], x+0) 
+      } else {
+         x = Sym1(table.syms[c], x)  };
       i.cells[c] = x }}
 }
 ```
-
-```awk
-function cellsort(lst,k) { 
-  CELLSORT=k; return asort(lst,lst,"cellcompare") 
-}
-```
-
-```awk
-function cellcompare(i1,v1,i2,v2,  l,r) {
-  l = v1.cells[CELLSORT]
-  r = v2.cells[CELLSORT]
-  if (l < r) return -1
-  if (l == r) return 0
-  return 1 
-}
-```
-
 
 

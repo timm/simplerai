@@ -9,168 +9,138 @@ title: super.fun
 <button class="button button1"><a href="/simpleai/LICENSE">license</a></button>
 
 ```awk
-@include "lib"
+@include "lib.fun"
 ```
 ```awk
-@include "table"
+@include "table.fun"
 ```
 ```awk
-@include "num"
+@include "num.fun"
 ```
 ```awk
-@include "sym"
+@include "sym.fun"
 ```
 
 ```awk
-function NumDec(i,v,    d) 
-  if (v == "?") return v 
-  if (i.n == 1) return v 
-  i.n  -= 1
-  d     = x - i.mu
-  i.mu -= d/i.n
-  i.m2 -= d*(v- i.mu)
-  NumSd(i)
-  return v
+function Super(super,col1,col2,new) {
+  List(super)
+  super.trivial = FUN.trivial
+  super.x= col1
+  super.y= col2
+  super.ynew=new
+  if (new=="Sym") {
+   super.add = "Sym1"; super.dec = "SymDec"; super.var = "SymEnt" 
+  } else {
+   super.add = "Num1"; super.dec = "NumDec"; super.var = "NumSd"
+ }
 }
 ```
 
+```awk
+function SuperY(super,r ,   z)      { 
+  return r.cells[super.y]   
+}
+```
 
 ```awk
-function Super(i) {
-  i.data = "data/weather" DOT "csv"
-  i.sep  = ","
-  i.step = 0.5
-  i.max = 256
-  i.magic = 2.56
-  i.cohen = 0.3
-  i.trivial = 0.3
+function SuperX(super,r)         { return r.cells[super.x]   }
+```
+```awk
+function SuperXput(super,r,x)    { return r.cells[super.x]=x }
+```
+```awk
+function SuperYnew(super,j,   f) { f=super.ynew; @f(j) }
+```
+```awk
+function SuperYvar(super,j,   f) { f=super.var; return @f(j) }
+```
+```awk
+function SuperYadd(super,j,r, f) { f=super.add; @f(j,SuperY(super,r)) }
+```
+```awk
+function SuperYdec(super,j,r, f) { f=super.dec; @f(j,SuperY(super,r)) }
+```
+
+```awk
+function SuperGlue(table,x,y,what,
+                   super,yall,j) {
+  # sort table on the 'x' values
+  cellsort(table.rows, x)
+  # initialize a new "super" object
+  Super(super,x,y,what)
+  # initialize a tracker for column "y"
+  SuperYnew(super, yall) 
+  # fill the tracker with data from column 'y"
+  for(j in table.rows) 
+    SuperYadd(super, yall, table.rows[j])
+  # check if we can glue together any of the 'x' ranges
+  SuperGlue1(super,table.rows, 1, l(table.rows), yall)
+}
+```
+
+ 
+```awk
+function SuperGlue1(super,a,lo,hi,right0,
+                   right,left,min,j,after,now,cut,
+                   v,left1,right1,new) {
+  copy(right0, right)
+  SuperYnew(super,left)
+  min = SuperYvar(super,right)
+  for(j=lo; j<hi; j++)  {
+    after = SuperX(super,a[j+1])
+    now   = SuperX(super,a[j])
+    SuperYadd(super,left,  a[j])
+    SuperYdec(super,right, a[j])
+    if ((now   != FUN.skip) &&
+        (now   != after)) {
+       new = SuperYxpect(super,left,right)
+       if (min > new * super.trivial) 
+         { min = new
+           cut = j 
+           copy(left,  left1)
+           copy(right, right1) }}
+    }
+  if (cut) {
+    SuperGlue1(super,a,lo,   cut,left1)
+    SuperGlue1(super,a,cut+1,hi, right1)
+  } else {
+    print "## fusing " super.x " lo " lo  " to " hi
+    for(j=lo;j<=hi;j++) {
+      if(v==FUN.skip)  continue
+      v=v==""?SuperX(super,a[j]):v
+      SuperXput(super,a[j], v) }
+  }
+}
+```
+
+```awk
+function SuperYxpect(super,a,b,va,vb) {
+  va = SuperYvar(super,a)
+  vb = SuperYvar(super,b)
+  return (a.n*va + b.n*vb) / (a.n + b.n)
 }
 ```
 
 -------------------------
 ```awk
-function Table(i) {
-  Object(i)
-  has(i,"rows")
-  has(i,"names")
-  has(i,"nums") 
+function TableGlue(table,y,what,  x) {
+  y = y?y:table.klass
+  if (!what)
+    what = y in table.nums ? "Num" : "Sym" 
+  for(x in table.nums)  
+    if(x != y) 
+     if(! (x in table.goal))
+      SuperGlue(table,x,y,what)
 }
 ```
 
 ```awk
-function TableRead(i,f) { lines(i,f, "Table1") }
-```
-
-```awk
-function Table1(i,r,lst,      c,x) {
-  if (r>1)  
-    return hasss(i.rows,r-1,"Row",lst,i)
-  for(c in lst)  {
-    x = i.names[c] = lst[c]
-    if (x ~ /[\$<>]/) 
-      hass(i.nums,c,"Some",c) }
+function superMain(   table,j) {
+  Table(table)
+  TableRead(table)
+  TableGlue(table)
+  TableDump(table)
 }
 ```
 
-```awk
-function TableDump(i,   r) {
-  print(cat(i.names))
-  for(r in i.rows)
-    print(cat(i.rows[r].cells)) 
-}
-```
-
-```awk
-function TableChop(i,   c) {
-  for(c in i.nums)  
-    TableChop1(i,c,i.nums[c]) 
-}
-```
-
-```awk
-function TableChop1(i,c,some,    r,cutter,cut,x,rs) {
-  Cuts(cutter, some)
-  CutsUp(cutter,some)
-  rs  = l(i.rows)
-  cut = 1
-  cellsort(i.rows, c)
-  for(r=1; r<=rs; r++)  {
-    x = i.rows[r].cells[c]
-    if (x != "?") {
-      if (x > some.cuts[cut]) 
-        if (cut< l(some.cuts) -1 )
-          cut++
-      i.rows[r].cells[c] = some.cuts[cut]  }}
-}
-```
-
-_______________________________
-```awk
-function Row(i,lst,t,     x,c) {
-  Object(i)
-  has(i,"cells")
-  for(c in t.names) {
-    x = lst[c]
-    if (x != "?") {
-      if (c in t.nums) {
-         x += 0
-         Some1(t.nums[c], x) }
-      i.cells[c] = x }}
-}
-```
-
----------------------
-```awk
-function Cuts(i,some,    n) {
-  Object(i)
-  n         = l(some.has)
-  i.cohen   = G.cohen
-  i.start   = at(some,1)
-  i.stop    = at(some,n)
-  i.step    = int(n^G.step)
-  i.trivial = G.trivial 
-  i.epsilon = sd(some,1, n )*i.cohen
-}
-```
-
-
-```awk
-function CutsUp(i,some,lo,hi,       
-               j,cut,min,now,after,new) {
-  lo = lo ? lo : 1
-  hi = hi ? hi : l(some.has)
-  if (hi - lo > i.step) {
-    min  = sd(some,lo,hi)
-    for(j = lo + i.step; j<=hi-i.step; j++) {
-      now =  at(some,j)
-      after = at(some,j+1)
-      if (now != after && 
-          after - i.start > i.epsilon && 
-          i.stop - now    > i.epsilon &&
-          mid(some,j+1,hi) - mid(some,lo,j) > i.epsilon && 
-          min > (new = xpect(some,lo,j,hi)) * i.trivial) {
-            min = new
-            cut = j }}}
-  if (cut) {
-    CutsUp(i,some,lo,    cut)
-    CutsUp(i,some,cut+1, hi)
-  } else 
-    some.cuts[l(some.cuts)+1] = some.has[hi] 
-}
-```
-
----------------------
-```awk
-function binsMain( t) { 
-   Bins(G); argv(G); FS=G.sep 
-   Table(t)
-   TableRead(t,G.data)
-   TableChop(t)
-   TableDump(t)
-   rogues()
-}
-```
-
-```awk
-BEGIN { binsMain() }
-```
+  
