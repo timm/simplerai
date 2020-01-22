@@ -56,7 +56,7 @@ dom2: ok
 dom2Header: ;@echo " <weight, >acceleration,>!mpg"
 
 dom2Prim: ok        
-	@cat ../data/auto93.csv | clean|cols | dom #\
-	#| grep -v "horse" | sort -t, -n -k 9 | cut -d, -f 4,5,8,9
+	@cat ../data/auto93.csv | clean|cols | dom \
+	| grep -v "horse" | sort -t, -n -k 9 | cut -d, -f 4,5,8,9
 
 

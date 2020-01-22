@@ -3,13 +3,13 @@
 
 BEGIN { srand(Seed ? Seed : 1)
         FS="," 
-        Samples=5 
+        Samples=100
 }
-function domMain(f,     nr,txt,d,w,lo,hi,c,r) {
+function domMain(f,     nr,line,d,w,lo,hi,c,r) {
   f  = f?f:"/dev/stdin"
   nr = 0
   while ((getline <f) > 0) {
-    txt[nr] = $0
+    line[nr] = $0
     if (nr++) 
       for(c in w)  {
         d[nr][c] = $c
@@ -22,26 +22,23 @@ function domMain(f,     nr,txt,d,w,lo,hi,c,r) {
           lo[c] =  10^32
           hi[c] = -10^32 }
    }  
-   print txt[0]",!>dom"
+   print line[0]",!>dom"
    for(r=1; r<=nr; r++)
-     print txt[r]",", doms(r,d,w,lo,hi) 
+     print line[r]",", doms(r,d,w,lo,hi) 
 }
 function doms(r1,d,w,lo,hi,      n,out) {
   n = Samples
   while(n--) 
-    out += dom(r1, 1 + int(rand()*length(d)),
-               d,w,lo,hi)
+    out += dom(r1, 1 + int(rand()*length(d)), d,w,lo,hi)
   return out/Samples
 }
 function dom(r1,r2,d,w,lo,hi,    n,c,a,b,a1,b1,s1,s2) {
-  print "\ndom ",r1," r2 " r2, " d " length(d)
   n = length(w)
   for(c in w) {
     a   = d[r1][c]
-    b   - d[r2][c]
+    b   = d[r2][c]
     a1  = (a - lo[c]) / (hi[c] - lo[c] + 10^-32)
     b1  = (b - lo[c]) / (hi[c] - lo[c] + 10^-32)
-    print r1,r2,c,"a " a," b "b," a1 "a1," b2 " b1," n "n
     s1 -= 10^( w[c] * (a1-b1)/n )
     s2 -= 10^( w[c] * (b1-a1)/n ) 
   }
