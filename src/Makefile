@@ -47,4 +47,16 @@ dom1Header: ;@echo "<effort,<defects,<months,!>dom"
 dom1Prim: ok        
 	@cat ../data/nasa93dem.csv | clean|cols | dom | grep -v "loc" | sort -t, -n -k 28 | cut -d, -f 25-
 
+dom2: ok
+	@echo "worst"
+	@$(MAKE) dom2Header dom2Prim  | head -11 | stats
+	@printf "\nbest\n"
+	@($(MAKE) dom2Header; $(MAKE) dom2Prim | tail -10)  | stats
+
+dom2Header: ;@echo " <weight, >acceleration,>!mpg"
+
+dom2Prim: ok        
+	@cat ../data/auto93.csv | clean|cols | dom \
+	| grep -v "horse" | sort -t, -n -k 9 | cut -d, -f 4,5,8,9
+
 
