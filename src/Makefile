@@ -45,7 +45,7 @@ dom1: ok
 dom1Header: ;@echo "<effort,<defects,<months,!>dom"
 
 dom1Prim: ok        
-	@cat ../data/nasa93dem.csv | clean|cols | dom | grep -v "loc" | sort -t, -n -k 28 | cut -d, -f 25-
+	@cat ../data/nasa93dem.csv | clean|cols | dom #| grep -v "loc" | sort -t, -n -k 28 | cut -d, -f 25-
 
 dom2: ok
 	@echo "worst"
@@ -56,7 +56,7 @@ dom2: ok
 dom2Header: ;@echo " <weight, >acceleration,>!mpg"
 
 dom2Prim: ok        
-	@cat ../data/auto93.csv | clean|cols | dom \
-	| grep -v "horse" | sort -t, -n -k 9 | cut -d, -f 4,5,8,9
+	@cat ../data/auto93.csv | clean|cols | dom #\
+	#| grep -v "horse" | sort -t, -n -k 9 | cut -d, -f 4,5,8,9
 
 
