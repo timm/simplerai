@@ -11,6 +11,12 @@ function add(i,v) {
   if ("ent" in i) return Sym1(i,v)
   return Some1(i,v)
 }
+function dec(i,v) {
+  if ("sd"  in i) return NumDec(i,v) 
+  if ("ent" in i) return SymDec(i,v)
+  print("# can dec from 'some'")
+  exit 1
+}
 function var(i) {
   if ("sd"  in i) return NumSd(i) 
   if ("ent" in i) return SymEnt(i)
