@@ -35,7 +35,7 @@ function SuperGlue1(i,rows,lo,hi,right0,
     if (x == FUN.skip)             continue
     if (x == SuperX(i, rows[j+1])) continue
     new = xpect(left,right)
-    if (min <= new * i.trivial)    continue
+    if (new*i.trivial > min) continue
     min = new
     cut = j 
     copy(left,  left1)
