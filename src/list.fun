@@ -68,4 +68,7 @@ function cellcompare(i1,v1,i2,v2,  l,r) {
   return 1 
 }
 
-
+function has1more(lst,new) {
+  has(lst, length(lst)+1, new)
+  return length(lst)
+}
