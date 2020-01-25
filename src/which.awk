@@ -15,8 +15,8 @@ function learns(table,repeats,picks,stack,f,
   for(j=1; j<=repeats; j++) {
     n = justTheBest(i.beam, stack)
     for(k=1; k<=picks; k++) {
-      a = pick(stack,n, "score",beam)
-      b = pick(stack,n, "score",beam)
+      a = pick(stack,n,beam, "score")
+      b = pick(stack,n, beam,"score")
       c = has1more(stack,"Rule")
       if (a>b) 
         combine(stack[a], stack[b], stack[c],f,table)
