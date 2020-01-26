@@ -7,6 +7,7 @@ ______________________________
 function Some0(i) {
   if (!i.magic) {
     List(i)
+    i.isa = "Some"
     i.magic = FUN.some.magic # 2.56
     i.max   = FUN.some.max   # 256
     i.small = FUN.stats.cliffs.small} # 0.147
@@ -82,6 +83,9 @@ function SomeXpect(i,j,m,k,   n) {
   n=k-j+1
   return (m-j)/n*sd(i,j,m) + (k-m -1)/n*sd(i,m+1,k) 
 }
+
+function SomeVar(i)    { return sd( i,1,l(i.has)) }
+function SomeMiddle(i) { return mid(i,1,l(i.has)) }
 
 ----------------------------
 

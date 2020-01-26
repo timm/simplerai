@@ -5,6 +5,7 @@
 
 function Num(i,pos,txt,w) {
   List(i)
+  i.isa = "Num"
   i.pos=pos
   i.txt=txt
   i.n  = i.mu = i.m2 = i.sd = 0
@@ -24,6 +25,10 @@ function Num1(i,v,    d) {
   NumSd(i)
   return v
 }
+# var is not "variance" but "variability"
+function NumVar(i)    { return i.sd }
+function NumMiddle(i) { return i.mu }
+
 function NumSd(i) {
   if (i.m2 < 0) return 0
   if (i.n < 2)  return 0

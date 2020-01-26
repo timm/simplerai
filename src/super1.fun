@@ -3,7 +3,7 @@
 
 @include "lib.fun"
 @include "table.fun"
-@include "col.fun"
+@include "methods.fun"
 
 function SuperY(i,r ,  z) { return r.cells[i.y]   }
 function SuperX(i,r)      { return r.cells[i.x]   }

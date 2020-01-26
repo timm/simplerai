@@ -21,6 +21,9 @@ clean1: ../data/bad.csv ok
  
 cols1: ../data/bad.csv ok
 	@cat $< | clean | cols
+ 
+stats1: ../data/bad.csv ok
+	@cat ../data/weather2.csv | clean | cols | stats
 bins1: ok
 	@cat ../data/weather.csv | clean | cols | bins
 bins2: ok
@@ -71,9 +74,11 @@ super1b: ok
 	@echo ""
 	@cat ../data/weather2.csv | sort -t, -n -k 3 | column -t -s,
 	@echo ""
-	@cat ../data/weather2.csv | clean | cols | super1
+	@cat ../data/weather2.csv | clean | cols | super1 | column -t -s,
 super2: ok
-	@cat ../data/auto93.csv | clean | cols | bins | clean | super 
+	@cat ../data/auto93.csv | clean | cols | bins | grep '#'
+	@echo ""
+	@cat ../data/auto93.csv | clean | cols | bins | clean | super1 | column -t -s, 
 
 super4: ok
 	@cat ../data/nasa93dem.csv | clean | cols | dom | bins| clean | super | sort -t, -n -k 28

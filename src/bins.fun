@@ -78,7 +78,8 @@ function binsMain( t,c) {
    Table(t)
    TableRead(t) #  reads from stdin
    TableChop(t)
-   for(c in t.nums)  
-     oo(t.nums[c].cuts,"## " c " ")
+   for(c in t.indep)  
+     if(c in t.nums)  
+       oo(t.nums[c].cuts,"## " c " ")
    TableDump(t)
 }

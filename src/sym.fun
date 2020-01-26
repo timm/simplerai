@@ -5,6 +5,7 @@
 
 function Sym(i,pos,txt,w) {
   List(i)
+  i.isa="Sym"
   i.pos=pos
   i.txt=txt
   has(i,"all")
@@ -22,6 +23,9 @@ function Sym1(i,v) {
     i.mode = v }
   return v
 }
+function SymVar(i) { return SymEnt(i) }
+function SymMiddle(i) { return i.mode }
+
 function SymEnt(i,    k,p) {
   if (i.ent == "")
     i.ent = 0
