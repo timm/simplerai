@@ -1,28 +1,28 @@
 ?id, 
-center,
+:center,
 ?$year,
-prec, #{h}
-flex, #{h}
-resl, #{h}
-team, #{vh}
-pmat, #{l,n,h}
-rely, #{l,n,h,vh}
-data, #{l,n,h,vh}
-cplx, #{l,n,h,vh,xh}
-ruse, #{n}
-docu, #{n}
-time, #{n,h,vh,xh}
-stor, #{n,h,vh,xh}
-pvol, #{l,n,h}
-acap, #{n,h,vh}
-pcap, #{n,h,vh}
-pcon, #{n} 
-apex, #{l,n,h,vh}
-plex, #{vl,l,n,h}
-ltex, #{vl,l,n,h}
-tool, #{n,h}
-site, #{n}
-sced, #{n,l,h}
+:prec, #{h}
+:flex, #{h}
+:resl, #{h}
+:team, #{vh}
+:pmat, #{l,n,h}
+:rely, #{l,n,h,vh}
+:data, #{l,n,h,vh}
+:cplx, #{l,n,h,vh,xh}
+:ruse, #{n}
+:docu, #{n}
+:time, #{n,h,vh,xh}
+:stor, #{n,h,vh,xh}
+:pvol, #{l,n,h}
+:acap, #{n,h,vh}
+:pcap, #{n,h,vh}
+:pcon, #{n} 
+:apex, #{l,n,h,vh}
+:plex, #{vl,l,n,h}
+:ltex, #{vl,l,n,h}
+:tool, #{n,h}
+:site, #{n}
+:sced, #{n,l,h}
 $kloc,#thousands lines of code
 <effort,  # development effort n months (one month =152 hours. includes development+ management)
 <defects, # observed defects

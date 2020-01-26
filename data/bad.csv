@@ -1,4 +1,4 @@
-outlook,   #
+:outlook,   #
 $temp,     # temperature
 $humidity, # air wetness
 ?windy,     # boolean

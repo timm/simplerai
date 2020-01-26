@@ -84,9 +84,8 @@ function TableGlue(table,y,what,  x) {
   y = y?y:table.klass
   if (!what)
     what = y in table.nums ? "Num" : "Sym" 
-  for(x in table.nums)  
-    if(x != y) 
-     if(! (x in table.goal))
+  for(x in i.indep)
+    if(x in table.nums)  
       SuperGlue(table,x,y,what)
 }
 function superMain(   table,j) {

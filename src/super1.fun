@@ -32,14 +32,14 @@ function SuperGlue1(i,rows,lo,hi,right0,
     y = SuperY(i, rows[j])
     add(left,  y)
     dec(right, y)
-    if (x == FUN.skip)             continue
-    if (x == SuperX(i, rows[j+1])) continue
-    new = xpect(left,right)
-    if (new*i.trivial > min) continue
-    min = new
-    cut = j 
-    copy(left,  left1)
-    copy(right, right1) 
+    if (x != FUN.skip)             
+      if (x != SuperX(i, rows[j+1])) {
+       new = xpect(left,right)
+       if (new*i.trivial < min)  {
+         min = new
+         cut = j 
+         copy(left,  left1)
+         copy(right, right1)  }}
   }
   if (cut) {
     SuperGlue1(i,rows,lo,   cut,left1)
@@ -57,9 +57,8 @@ function TableGlue(table,y,what,  x) {
   y = y?y:table.klass
   if (!what)
     what = y in table.nums ? "Num" : "Sym" 
-  for(x in table.nums)  
-    if(x != y) 
-     if(! (x in table.goal))
+  for(x in table.indep)  
+     if(x in table.nums)
       SuperGlue(table,x,y,what)
 }
 function super1Main(   table,j) {

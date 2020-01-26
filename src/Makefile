@@ -25,12 +25,55 @@ bins1: ok
 	@cat ../data/weather.csv | clean | cols | bins
 bins2: ok
 	@cat ../data/auto93.csv | clean | cols | bins
+
+## bins2
+## 2 1: 131
+## 2 2: 168
+## 2 3: 360
+## 2 4: 455
+## 3 1: 77
+## 3 2: 90
+## 3 3: 100
+## 3 4: 116
+## 3 5: 133
+## 3 6: 153
+## 3 7: 180
+## 3 8: 230
+## 4 1: 2228
+## 4 2: 2525
+## 4 3: 2745
+## 4 4: 4141
+## 4 5: 4499
+## 4 6: 5140
+## 5 1: 11
+## 5 2: 12.5
+## 5 3: 13.8
+## 5 4: 14.9
+## 5 5: 15.7
+## 5 6: 16.1
+## 5 7: 17.5
+## 5 8: 19.4
+## 5 9: 24.6
+## 6 1: 71
+## 6 2: 73
+## 6 3: 76
+## 6 4: 79
+## 6 5: 82
+## 8 1: 10
+## 8 2: 20
+## 8 3: 40
+
+
 super1: ok
-	@cat ../data/weather.csv | clean | cols | bins # clean | super
+	@cat ../data/weather2.csv | clean | cols | bins # clean | super
+super1b: ok
+	@cat ../data/weather2.csv | sort -t, -n -k 2 | column -t -s,
+	@echo ""
+	@cat ../data/weather2.csv | sort -t, -n -k 3 | column -t -s,
+	@echo ""
+	@cat ../data/weather2.csv | clean | cols | super1
 super2: ok
 	@cat ../data/auto93.csv | clean | cols | bins | clean | super 
-super3: ok
-	@cat ../data/weather2.csv | super
 
 super4: ok
 	@cat ../data/nasa93dem.csv | clean | cols | dom | bins| clean | super | sort -t, -n -k 28

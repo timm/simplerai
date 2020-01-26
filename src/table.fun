@@ -15,26 +15,31 @@ function Table(table) {
   has(table,"names")
   has(table,"goal")
   has(table,"indep")
+  has(table,"dep")
+  has(table,"meta")
   has(table,"nums") 
   has(table,"syms") 
 }
-function TableRead(i,f) { lines(i,f, "Table1") }
+function TableRead(i,f) { lines(i,f, "TableUpdate") }
 
-function Table1(i,r,lst,      c,x, what,w) {
+function TableUpdate(i,r,lst,      c,x, what,w) {
   if (r>1)  
     return hasss(i.rows,r-1,"Row",lst,i)
   else {
    for(c in lst)  {
       x = i.names[c] = lst[c]
-      if (x ~  /!/)     i.klass=c
-      if (x ~  /</)     i.goal[c]
-      if (x ~  />/)     i.goal[c]
-      if (x !~ /[!<>]/) i.indep[c]
-      w = x ~  /</ ? -1: 1 
-      if (x ~  /[\$<>]/)
-        hassss(i.nums,c,"Some",c,x,w) 
-      else
-        hassss(i.syms,c,"Sym",c,x,w) }} 
+      if (x ~ /%/) 
+        i.meta[c]
+      else {
+        if (x ~ /!/)     i.klass=c
+        if (x ~ /</)     i.goal[c]
+        if (x ~ />/)     i.goal[c]
+        if (x ~ /[!<>]/) {i.dep[c]} else {i.indep[c]}
+        w = x ~ /</ ? -1: 1 
+        if (x ~ /[\$<>]/)
+          hassss(i.nums,c,"Some",c,x,w) 
+        else
+          hassss(i.syms,c,"Sym",c,x,w) }}}
 }
 function TableDump(i,   r) {
   print(cat(i.names))
@@ -49,8 +54,10 @@ function Row(i,lst,table,     x,c) {
     if (x != "?") {
       if (c in table.nums)  {
          x = Some1(table.nums[c], x+0) 
-      } else {
-         x = Sym1(table.syms[c], x)  };
+      } 
+      if (c in table.syms) {
+         x = Sym1(table.syms[c], x)  
+      }
       i.cells[c] = x }}
 }
 

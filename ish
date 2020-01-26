@@ -183,6 +183,7 @@ vimrc() { cat<<-'EOF'
 	"filetype plugin on
 	colorscheme jellybeans
 	map <C-o> :NERDTreeToggle<CR>
+	nnoremap <Leader><space> :noh<cr>
 	autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 	hi Normal guibg=NONE ctermbg=NONE
 	hi NonText guibg=NONE ctermbg=NONE

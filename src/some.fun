@@ -50,6 +50,40 @@ function SomeDiff(a,b,
   }
   return abs(lt-gt)/(la*lb) > a.small 
 }
+function SomeBest(i,lo,hi,bigger,step,e,tiny,  
+                  j,cut,min,now,after,new,start,stop) {
+  lo    = lo     ? lo     : 1
+  hi    = hi     ? hi     : l(i.has)
+  bigger= bigger ? bigger : 1
+  tiny  = tiny   ? tiny   : 1.05
+  step  = step   ? step   : length(i.has)^0.5
+  e     = e      ? e      : sd(i,1,l(i.has))*0.3
+  start = first(i.has)
+  stop  = last(i.has)
+  if (hi - lo > step) {
+    min = sd(i,lo,hi)
+    for(j = lo + step; j<=hi-step; j++) {
+      now   = at(i,j)
+      after = at(i,j+1)
+      if (now != after && 
+          e < after - start  && 
+          e < stop - now     &&
+          e < mid(i,j+1,hi) - mid(i,lo,j)) 
+         { new= SomeXpect(i,lo,j,hi)
+           if (min>  new * tiny) 
+             { min = new
+               cut = j }}}}
+  if (!cut)   return bigger ? i.has[lo] : i.has[hi]
+  if (bigger) return SomeBest(i, cut+1, hi,bigger,step,e,tiny)
+  else        return SomeBest(i, lo,   cut,bigger,step,e,tiny)
+}
+
+function SomeXpect(i,j,m,k,   n) {
+  n=k-j+1
+  return (m-j)/n*sd(i,j,m) + (k-m -1)/n*sd(i,m+1,k) 
+}
+
+----------------------------
 
 function sorted(i)  { 
   if (!i.sorted) 
@@ -64,9 +98,5 @@ function per(i,j,k,p) { return at(i,j + p*(k-j))   }
 function mid(i,j,k)   { return per(i,j,k,0.5) }
 function sd(i,j,k)    {
   return abs(per(i,j,k,.9) - per(i,j,k,.1))/i.magic 
-}
-function SomeXpect(i,j,m,k,   n) {
-  n=k-j+1
-  return (m-j)/n*sd(i,j,m) + (k-m -1)/n*sd(i,m+1,k) 
 }
 
