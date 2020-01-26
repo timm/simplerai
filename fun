@@ -46,6 +46,16 @@ lib() { cat <<-EOF
       if (s ~ /^[A-Z][a-z]/) print "Global " s
       if (s ~ /^[_a-z]/    ) print "Rogue: " s }
   }
+ function how(i,f,    k,m) {
+    k = i["isa"]
+    while(k) {
+      m=k f
+      if (m in FUNCTAB) return m
+      k=FUN["ISA"][k]
+    }
+    print "E> failed method lookup on ["f"]"; 
+    exit 1
+ }
 
 EOF
 }

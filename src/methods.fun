@@ -6,17 +6,6 @@
 @include "num.fun"
 @include "sym.fun"
 
-function how(i,f,    k,m) {
-  k = i["isa"]
-  while(k) {
-    m=k f
-    if (m in FUNCTAB) return m
-    k=FUN.ISA[k]
-  }
-  print "E> failed method lookup on ["f"]"; 
-  exit 1
-}
-
 function add(i,v,  f) { f= how(i,"1"); return @f(i,v) }
 function dec(i,v,  f) { f= how(i,"Dec"); return @f(i,v) }
 function var(i,    f) { f= how(i,"Var"); return @f(i) }
