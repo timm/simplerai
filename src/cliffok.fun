@@ -5,12 +5,12 @@
 @include "some.fun"
 
 function cliffsDeltaSlow(a,b,    tmp,la,lb,x,y,j,k,gt,lt) {
-  la = l(a.has)
-  lb = l(b.has)
-  for(j in a.has)
-    for(k in b.has) {
-      x= a.has[j]
-      y= b.has[k]
+  la = l(a.a)
+  lb = l(b.a)
+  for(j in a.a)
+    for(k in b.a) {
+      x= a.a[j]
+      y= b.a[k]
       gt += x > y
       lt += x < y}
   tmp=  abs(lt-gt)/(la*lb) 
@@ -20,12 +20,12 @@ function cliffsDeltaSlow(a,b,    tmp,la,lb,x,y,j,k,gt,lt) {
 function cliffsDeltaFaster(a,b,   n,tmp,j,la,lb,x,lo,hi,gt,lt) {
   la = sorted(a)
   lb = sorted(b)
-  n= l(b.has)
-  for(j in a.has) {
-    x= a.has[j]
-    lo= hi= binChop(b.has, x)
-    while(lo > 1 && b.has[lo] == x) lo--
-    while(hi < n && b.has[hi] == x) hi++
+  n= l(b.a)
+  for(j in a.a) {
+    x= a.a[j]
+    lo= hi= binChop(b.a, x)
+    while(lo > 1 && b.a[lo] == x) lo--
+    while(hi < n && b.a[hi] == x) hi++
     gt += lb - hi 
     lt += lo
   }
@@ -34,12 +34,12 @@ function cliffsDeltaFaster(a,b,   n,tmp,j,la,lb,x,lo,hi,gt,lt) {
   return 0.147 < tmp
 }
 function cliffsDeltaFastest(a,b,s,   a1,la,j) {
-  s=s ? s : min(l(a.has), 20)
+  s=s ? s : min(l(a.a), 20)
   la = sorted(a)
   Some(a1)
-  la= l(a.has)
+  la= l(a.a)
   for(j=1; j<=la; j= int(j+la/s)) {
-    Some1(a1, a.has[j])
+    Some1(a1, a.a[j])
   }
   return cliffsDeltaFaster(a1,b)
 }

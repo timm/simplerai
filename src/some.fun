@@ -14,7 +14,7 @@ function Some0(i) {
 }
 function Some(i,pos,txt,w) {
   Some0(i)
-  has(i,"has")
+  has(i,"a")
   has(i,"cuts")
   i.w = 1
   i.pos    = pos ? pos : 1
@@ -27,25 +27,25 @@ function Some1(i,v) {
   if (v == "?") return
   i.n++
   if (i.n < i.max) {
-    i.has[ l(i.has)+1 ] = v
+    i.a[ l(i.a)+1 ] = v
     i.sorted=0
   } else {
     if (i.n == i.max) 
       sorted(i)
     if (rand() < i.max/i.n)
-      i.has[ binChop(i.has,v) ] = v }
+      i.a[ binChop(i.a,v) ] = v }
   return v
 }
 function SomeDiff(a,b,  
                   n,la,lb,j,x,lo,hi,gt,lt) {
   la = sorted(a)
   lb = sorted(b)
-  n  = l(b.has)
-  for(j in a.has) {
-    x  = a.has[j]
-    lo = hi= binChop(b.has, x)
-    while(lo > 1 && b.has[lo] == x) lo--
-    while(hi < n && b.has[hi] == x) hi++
+  n  = l(b.a)
+  for(j in a.a) {
+    x  = a.a[j]
+    lo = hi= binChop(b.a, x)
+    while(lo > 1 && b.a[lo] == x) lo--
+    while(hi < n && b.a[hi] == x) hi++
     gt += lb - hi 
     lt += lo
   }
@@ -53,19 +53,20 @@ function SomeDiff(a,b,
 }
 function SomeBest(i,lo,hi,bigger,step,e,tiny,  
                   j,cut,min,now,after,new,start,stop) {
+  sorted(i)
   lo    = lo     ? lo     : 1
-  hi    = hi     ? hi     : l(i.has)
+  hi    = hi     ? hi     : l(i.a)
   bigger= bigger ? bigger : 1
   tiny  = tiny   ? tiny   : 1.05
-  step  = step   ? step   : length(i.has)^0.5
-  e     = e      ? e      : sd(i,1,l(i.has))*0.3
-  start = first(i.has)
-  stop  = last(i.has)
+  step  = step   ? step   : length(i.a)^0.5
+  e     = e      ? e      : sd(i,1,l(i.a))*0.3
+  start = first(i.a)
+  stop  = last(i.a)
   if (hi - lo > step) {
     min = sd(i,lo,hi)
     for(j = lo + step; j<=hi-step; j++) {
-      now   = at(i,j)
-      after = at(i,j+1)
+      now   = i.a[j]
+      after = i.a[j+1]
       if (now != after && 
           e < after - start  && 
           e < stop - now     &&
@@ -74,7 +75,7 @@ function SomeBest(i,lo,hi,bigger,step,e,tiny,
            if (min>  new * tiny) 
              { min = new
                cut = j }}}}
-  if (!cut)   return bigger ? i.has[lo] : i.has[hi]
+  if (!cut)   return bigger ? i.a[lo] : i.a[hi]
   if (bigger) return SomeBest(i, cut+1, hi,bigger,step,e,tiny)
   else        return SomeBest(i, lo,   cut,bigger,step,e,tiny)
 }
@@ -84,19 +85,19 @@ function SomeXpect(i,j,m,k,   n) {
   return (m-j)/n*sd(i,j,m) + (k-m -1)/n*sd(i,m+1,k) 
 }
 
-function SomeVar(i)    { return sd( i,1,l(i.has)) }
-function SomeMiddle(i) { return mid(i,1,l(i.has)) }
+function SomeVar(i)    { return sd( i,1,l(i.a)) }
+function SomeMiddle(i) { return mid(i,1,l(i.a)) }
 
 ----------------------------
 
 function sorted(i)  { 
   if (!i.sorted) 
-    i.sorted=asort(i.has) 
-  return length(i.has)
+    i.sorted=asort(i.a) 
+  return length(i.a)
 }
 function at(i,z)      { 
   if(!i.sorted) sorted(i)
-  return i.has[int(z)] 
+  return i.a[int(z)] 
 }
 function per(i,j,k,p) { return at(i,j + p*(k-j))   }
 function mid(i,j,k)   { return per(i,j,k,0.5) }

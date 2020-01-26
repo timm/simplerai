@@ -44,21 +44,22 @@ function Cuts0(i,some,    n) {
     List(i)
     i.cohen   = FUN.stats.cohen.small
     i.trivial = FUN.trivial 
-    n         = l(some.has)
+    n         = l(some.a)
     i.step    = int(n^FUN.bins.step)
     i.epsilon = sd(some,1, n )*i.cohen }
 }
 function Cutting(i,some,lo,hi,       
                j,cut,min,now,after,new,start,stop) {
+  sorted(some)
   lo    = lo ? lo : 1
-  hi    = hi ? hi : l(some.has)
-  start = first(some.has)
-  stop  = last(some.has)
+  hi    = hi ? hi : l(some.a)
+  start = first(some.a)
+  stop  = last(some.a)
   if (hi - lo > i.step) {
     min = sd(some,lo,hi)
     for(j = lo + i.step; j<=hi-i.step; j++) {
-      now =  at(some,j)
-      after = at(some,j+1)
+      now =  some.a[j]
+      after = some.a[j+1]
       if (now != after && 
           i.epsilon < after - start  && 
           i.epsilon < stop - now  &&
@@ -71,7 +72,7 @@ function Cutting(i,some,lo,hi,
     Cutting(i, some, lo,    cut)
     Cutting(i, some, cut+1, hi)
   } else 
-    some.cuts[l(some.cuts)+1] = some.has[hi] 
+    some.cuts[l(some.cuts)+1] = some.a[hi] 
 }
 ---------------------
 function binsMain( t,c) { 

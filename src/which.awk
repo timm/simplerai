@@ -34,10 +34,10 @@ function justTheBest(beam,stack,     i,n) {
   return n
 }
 function combine(good,better,new,f,table,    a) {
-  for(a in good.has) 
-    new.has[a] = good.has[a]
+  for(a in good.a) 
+    new.a[a] = good.a[a]
   for(a in better,has) # the better can overwrite the good
-    new.has[a] = better.has[a]
+    new.a[a] = better.a[a]
   new.score = @f(new, table) 
 }  
 function pick(a,sum,beam,k,    i,r) {
