@@ -11,10 +11,11 @@ function domMain(f,
                  w,      # weights for columns
                  lo,hi){ # min,mac for columns
   f  = f?f:"/dev/stdin"
-  nr = 0
+  nr = -1
   while ((getline <f) > 0) {
+    nr++
     line[nr] = $0
-    if (nr++) 
+    if (nr>0) 
       for(c in w)  {
         d[nr][c] = $c
         if ( $c > hi[c] ) hi[c] = $c

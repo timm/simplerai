@@ -67,8 +67,6 @@ bins2: ok
 ## 8 3: 40
 
 
-super1: ok
-	@cat ../data/weather2.csv | clean | cols | bins # clean | super
 super1b: ok
 	@cat ../data/weather2.csv | sort -t, -n -k 2 | column -t -s,
 	@echo ""
@@ -81,7 +79,7 @@ super2: ok
 	@cat ../data/auto93.csv | clean | cols | bins | clean | super1 | column -t -s, 
 
 super4: ok
-	@cat ../data/nasa93dem.csv | clean | cols | dom | bins| clean | super | sort -t, -n -k 28
+	@cat ../data/nasa93dem.csv | clean | cols | dom | bins| clean | super1 | sort -t, -n -k 28
 
 super21: ok
 	@cat ../data/auto93.csv | clean | cols | bins | clean | super1 
