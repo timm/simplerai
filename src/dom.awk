@@ -15,7 +15,7 @@ function domMain(f,
   while ((getline <f) > 0) {
     nr++
     line[nr] = $0
-    if (nr>0) 
+    if (nr) 
       for(c in w)  {
         d[nr][c] = $c
         if ( $c > hi[c] ) hi[c] = $c
