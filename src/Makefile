@@ -7,7 +7,8 @@ PATH:=$(PATH):$B
 ok: dirs files
 
 dirs:; @mkdir -p $B
-files: $B/clean $B/cols $B/bins $B/super $B/stats $B/dom  $B/super1
+files: $B/clean $B/cols $B/bins $B/super $B/stats $B/dom  $B/super1 \
+       $B/dom1
 
 $B/% : %.awk; @../fun $< make
 $B/% : %.fun; @../fun $< make
@@ -99,6 +100,11 @@ dom1Header: ;@echo "<effort,<defects,<months,!>dom"
 
 dom1Prim: ok        
 	@cat ../data/nasa93dem.csv | clean|cols | dom #| grep -v "loc" | sort -t, -n -k 28 | cut -d, -f 25-
+
+.PNONY: dom4Prim
+
+dom4Prim: ok        
+	@cat ../data/nasa93dem.csv | clean|cols | dom
 
 .PHONY: dom2 dom2Header dom2Prim 
 

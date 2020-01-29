@@ -1,51 +1,51 @@
+#!/usr/bin/env gawk -f
+# vim: filetype=awk ts=2 sw=2 sts=2  et :
+
+#DEF _cols  d,w,lo,hi
+
 BEGIN { srand(Seed ? Seed : 1)
         FS="," 
         Samples=100
 }
-function domMain(f,     nr,line,cols,rows) {
+function dom1Main(f,     
+                 line,c,r,nr,_cols) {
   f  = f?f:"/dev/stdin"
-  nr = 0
+  nr = -1
   while ((getline <f) > 0) {
+    nr++
     line[nr] = $0
-    if (nr++)  {
-      for(c in cols)  
-        rows[nr][c] = update(cols[c],$c)
-    } else {
+    if (nr) 
+      for(c in w)  {
+        d[nr][c] = $c
+        if ( $c > hi[c] ) hi[c] = $c
+        if ( $c < lo[c] ) lo[c] = $c 
+    } else 
       for(c=1;c<=NF;c++)  
-        create(cols,c,$c) }
+        if( $c ~ /[<>]/ )  {
+          w[ c] =  ($c ~ /</) ? -1 : 1 
+          lo[c] =  10^32
+          hi[c] = -10^32 }
+   }  
    print line[0]",!>dom"
    for(r=1; r<=nr; r++)
-     print line[r]",", doms(r,rows,cols)
+     print line[r]",", doms(r,_cols,Samples) 
 }
-function create(a,i,s  ) {
-  if (s ~ /[<>]/) {
-    a[i]["w"]  = (s ~ /</) ? -1 : 1
-    a[i]["lo"] =  10^32
-    a[i]["hi"] = -10^32 }
-}
-function update(i,v) {
-  if (v < i["lo"]) i["lo"]=v
-  if (v > i["hi"]) i["hi"]=v
-  return v
-}
-function norm(i,v) {
-  return (v-i["lo"])/(i["hi"]- i["lo"])
-}
-function doms(r1,rows,cols,      n,out) {
-  n = Samples
+function doms(r1,_cols,n,      out) {
   while(n--) 
-    out += dom(r1,rows,cols)
+    out += dom(r1,_cols)
   return out/Samples
 }
-function dom(r1,rows,cols,   r2,w,n,c,a,b,s1,s2) {
-  r2= 1 + int(rand()*length(rows))
-  n = length(cols)
-  for(c in cols) {
-    a   = norm(cols[c], rows[r1][c])
-    b   = norm(cols[c], rows[r2][c])
-    w   = cols[c]["w"]
-    s1 -= 10^( w * (a-b)/n )
-    s2 -= 10^( w * (b-a)/n ) 
+function dom(r1,_cols,
+             r2,n,c,a,b,a1,b1,s1,s2) {
+  r2= 1 + int(rand()*length(d))
+  n = length(w)
+  for(c in w) {
+    a   = d[r1][c]
+    b   = d[r2][c]
+    a1  = (a - lo[c]) / (hi[c] - lo[c] + 10^-32)
+    b1  = (b - lo[c]) / (hi[c] - lo[c] + 10^-32)
+    s1 -= 10^( w[c] * (a1-b1)/n )
+    s2 -= 10^( w[c] * (b1-a1)/n ) 
   }
   return s1/n < s2/n
 }

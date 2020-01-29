@@ -1,12 +1,15 @@
 #!/usr/bin/env ../fun
 # vim: filetype=awk nospell ts=2 sw=2 sts=2  et :
 
+#DEF table hi
 function Nb(i,klass,indep) {
   i.m=2
   i.k=1
   i.start=5
   i.skip="?"
   i.sep=","
+  has(i,data)
+  has(i,cnts)
   for(j in indep) i.indep[j]
   i.klass=klass
 }
@@ -25,7 +28,7 @@ function NbStream(i,f) {
     
 function likelihoods(k  
    like = -10^32
-   for(class in h) {
+   for(class in i.data) {
       prior = (h[class]+opt("K"))/(instances(h) + opt("K")*H);
       temp  = log(prior)
       for(i=1;i<=NF;i++) {
