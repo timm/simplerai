@@ -1,77 +1,83 @@
 #!/usr/bin/env ../fun
 # vim: filetype=awk nospell ts=2 sw=2 sts=2  et :
 
-#DEF table hi
+#DEF _tbl head,name,data,all,abcd
+
 @include "abcd.fun"
 
-function nbMain(i) {
-  Nb(i)
-  lines(i,"what2do")
-  AbcdReport(i.abcd)
-  print(i.k)
+function MyNb(my) {
+  my.m      = 2
+  my.k      = 1
+  my.start  = 5
+  my.klass  = ""
 }
 function Nb(i) {
-  i.skip   = "?"
-  i.m      = 2
-  i.k      = 1
-  i.sep    = ","
-  i.start  = 5
-  i.klass  = ""
-  i.doomed = "([ \t]|#.*)"
-  i.instances = 0
+  has(i,"data","Rows")
+  has(i,"results","Abcd")
+}
+function Rows(i) {
+  i.instances=0
   has(i,"head")
   has(i,"name")
-  has(i,"data")
+  has(i,"rows")
   has(i,"all")
-  has(i,"abcd","Abcd")
 }
-function lines(i,fun, file,   n,line,a) {
+function lines(my,what,fun,file,   line,a) {
   file=file?file:"-"
   while((getline line < file) > 0)  {
-    gsub(i.doomed, "", line)
+    gsub("([ \t]|#.*)/","", line)
     if (line) {
-      split(line, a, i.sep)
-      @fun(i, n++, a) }
+      split(line, a, ",")
+      @fun(my,what, a) }
   }  
   close(file)
 }
-function what2do(i, n, a,    got,want) {
-  if (n == 0) return header(i, a)
-  if (n > i.start) {
-    want = a[i.k]
-    got = classify(i,a)
-    Abcd1(i.abcd, want, got)
+function learn(my,ai,a,    got,want) {
+  if ((n = length(ai.data.name)) == 0)
+     header(my,ai.data, a)
+  else if (n > my.start) {
+    want = a[my.k]
+    got  = classify(my,ai.data,a)
+    Abcd1(ai.results, want, got)
   } else
-    train(i, a, a[i.k]) 
+    train(my, ai.data,a, a[i.k]) 
 }
-function header(i,a,     c) { 
-  i.k = length(a)
+function header(my,data,a,     c) { 
+  my.klass = my.klass? my.klass : length(a)
   for(c in a) { 
-    i.head[c]    = a[c] 
-    i.name[a[c]] = c }
+    data.head[c]    = a[c] 
+    data.name[a[c]] = c }
 }
-function train(i,a,k,   c,x) {
-  print("k",k)
-  i.instances++
-  i.all[k]++
+function train(my,data,a,k,   c,x,k) {
+  k = a[my.klass]
+  data.instances++
+  data.all[k]++
   for(c in a) 
     if ((x = a[c]) != "?")  
-      i.data[k][c][x]++ 
+      data.rows[k][c][x]++ 
 }
-function classify(i,a,     
+function classify(my,data,a,     
                   some,like,all,k,prior,tmp,c,x,out) {
   like = -10^32
-  all  = i.instances + i.k*length(i.data)
-  for(k in i.data) {
-    some  = i.all[k] + i.m
-    prior = (i.all[k] + i.k) / all
+  all  = data.instances + my.k*length(data.rows)
+  for(k in data.rows) {
+    some  = data.all[k] + my.m
+    prior = (data.all[k] + my.k) / all
     tmp   = log(prior)
-    for(c in a) 
-      if (c != i.klass)  
-        if ((x = a[c]) != i.skip) 
-          tmp += log(i.data[k][c][x] + i.m*prior) / some;
+    for(c in data.head) 
+      if (c != my.klass)  
+        if ((x = a[c]) != "?")
+          tmp += log(data[k][c][x] + my.m*prior) / some;
     if ( tmp >= like )  {
       like = tmp
       out  = k }}
   return out
-} 
+}
+function nbMain(my) {
+  MyNb(my)
+  Nb(nb)
+  lines(my,nb,"learn")
+  AbcdReport(nb.results)
+  print(my.k)
+}
+ 
