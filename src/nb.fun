@@ -3,46 +3,59 @@
 
 #DEF table hi
 function Nb(i,klass,indep) {
+  i.skip="?"
   i.m=2
   i.k=1
-  i.start=5
-  i.skip="?"
   i.sep=","
-  has(i,data)
-  has(i,cnts)
-  for(j in indep) i.indep[j]
-  i.klass=klass
+  i.start = 5
+  i.doomed = "([ \t]|#.*)"
+  i.instances = 0
+  has(i,"head")
+  has(i,"name")
+  has(i,"data")
+  has(i,"all")
+  i.klass=""
 }
-function NbStream(i,f) {
-  f=f?f:"-"
-  while((getline < f) > 0)  {
-    if (n>i.start)
-      print $i.k,classify();
-    if (n++ == 0) {
-      for(j=1;j<=NF;j++) 
-        i.name[j]=$j;
-    } else {
-      for(j=1;j<=NF;j++) 
-        i.data[$i.k][j][$j]++
+function lines(i,fun, file,   n,line,a) {
+  file=file?file:"-"
+  while((getline line < file) > 0)  {
+    gsub(i.doomed, "", line)
+    if (line) {
+      split(line, a, i.sep)
+      @fun(i, n++, a) }
+  }  
+  close(file)
+}
+function what2do(i, n, a) {
+  if (n == 0)      return header(i, a)
+  if (n > i.start) return classify(i, a)
+  train(i, a, a[i.k]) }
+}
+function header(i,a,     c) { 
+  i.klass = length(a)
+  for(c in a) { 
+    i.head[c]    = a[c] 
+    i.name[a[c]] = c }
+}
+function train(i,a,k,   c) {
+  i.instances++
+  i.all[k]++
+  for(c in a) 
+    if ((x = a[c]) != "?")  
+      i.data[k][c][x]++ 
+}
+function classify(i,a,     like,all,klass,prior,tmp,c,x,out,demon,nom) {
+  like = -10^32
+  all  = i.instances + i.k*length(i.data)
+  for(k in i.data) {
+    prior = (i.all[class] + i.k) / all
+    tmp  = log(prior)
+    for(c in a) 
+      if (c != i.klass)  
+        if ((x = a[c]) != i.skip) 
+          tmp += log(i.data[klass][c][x] + i.m*prior)/(i.all[klass] + i.m);
+    if ( tmp >= like )  {
+      like = tmp
+      out  = class }}
+  return out
 } 
-    
-function likelihoods(k  
-   like = -10^32
-   for(class in i.data) {
-      prior = (h[class]+opt("K"))/(instances(h) + opt("K")*H);
-      temp  = log(prior)
-      for(i=1;i<=NF;i++) {
-         if (i != k)
-            if ( $i != opt("D") )
-                temp += log((n[class,i,$i]+opt("M")*prior)/(h[class]+opt("M")))
-      }
-      l[class]= temp
-      if ( temp >= like ) 
-    if (class != opt("A")) {
-      like = temp
-      what=class
-    }
-   }
-   return what
- } 
- 
