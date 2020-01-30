@@ -17,7 +17,7 @@ function Abcd1(i,want, got,   x) {
     if (want == x) 
       want == got ? i.d[x]++ : i.b[x]++
     else 
-      got == x      ? i.c[x]++ : i.a[x]++
+      got == x    ? i.c[x]++ : i.a[x]++
 }
 function AbcdReport(i,   
                     x,p,q,r,s,ds,pd,pf,
@@ -29,8 +29,8 @@ function AbcdReport(i,
   ds= "----"
   printf(r s r s r s r s r s q s q s q s q s q s q s " class\n",
         "num","a","b","c","d","acc","pre","pd","pf","f","g")
-  printf(r  s r s r s r s r s r s r s q s q s q s q s q s q s "-----\n",
-         ds,ds,"----",ds,ds,ds,ds,ds,ds,ds,ds,ds,ds)
+  printf(r s r s r s r s r s q s q s q s q s q s q s "-----\n",
+         "----",ds,ds,ds,ds,ds,ds,ds,ds,ds,ds)
   for (x in i.known) {
     pd = pf = pn = prec = g = f = acc = 0
     a = i.a[x]

@@ -4,6 +4,7 @@
 #DEF _tbl head,name,data,all,abcd
 
 @include "abcd.fun"
+@include "lib.fun"
 
 function MyNb(my) {
   my.m      = 2
@@ -22,41 +23,51 @@ function Rows(i) {
   has(i,"rows")
   has(i,"all")
 }
-function lines(my,what,fun,file,   line,a) {
+function read(my,what,funs,file,   fun,pat,line,a) {
   file=file?file:"-"
   while((getline line < file) > 0)  {
     gsub("([ \t]|#.*)/","", line)
     if (line) {
       split(line, a, ",")
-      @fun(my,what, a) }
+      for(pat in funs)
+        if (line ~ pat) {
+          fun = funs[pat]
+          @fun(my,what, a) }}
   }  
   close(file)
 }
-function learn(my,ai,a,    got,want) {
-  if ((n = length(ai.data.name)) == 0)
-     header(my,ai.data, a)
-  else if (n > my.start) {
-    want = a[my.k]
-    got  = classify(my,ai.data,a)
-    Abcd1(ai.results, want, got)
-  } else
-    train(my, ai.data,a, a[i.k]) 
+
+#payload past ardoun file
+# learn paired with evluation
+# config seperaete to rest of sysmte
+# learner and eval seperate (learner does not kow it is being evalautes)
+
+function NbLearn(my,ai,a,   initialized,rows,want,got) {
+  initialized = length(ai.data.name)
+  if (! initialized)
+     NbHeader(my,ai.data, a)
+  else {
+    if (ai.data.instances > my.start) 
+         Abcd1(ai.results, a[my.klass], 
+                           NbClassify(my,ai.data,a))
+    else 
+       NbTrain(my, ai.data,a) }
 }
-function header(my,data,a,     c) { 
+function NbHeader(my,data,a,     c) { 
   my.klass = my.klass? my.klass : length(a)
   for(c in a) { 
     data.head[c]    = a[c] 
     data.name[a[c]] = c }
 }
-function train(my,data,a,k,   c,x,k) {
+function NbTrain(my,data,a,   k,c,x) {
   k = a[my.klass]
   data.instances++
   data.all[k]++
-  for(c in a) 
-    if ((x = a[c]) != "?")  
+  for(c in data.name) 
+    if ((x = a[c]) != "?")   
       data.rows[k][c][x]++ 
 }
-function classify(my,data,a,     
+function NbClassify(my,data,a,     
                   some,like,all,k,prior,tmp,c,x,out) {
   like = -10^32
   all  = data.instances + my.k*length(data.rows)
@@ -73,11 +84,11 @@ function classify(my,data,a,
       out  = k }}
   return out
 }
-function nbMain(my) {
+function nbMain(       my,nb,funs) {
   MyNb(my)
   Nb(nb)
-  lines(my,nb,"learn")
+  funs["^data"] = "NbLearn"
+  read(my,nb,funs)
   AbcdReport(nb.results)
-  print(my.k)
 }
  
