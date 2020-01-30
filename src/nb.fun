@@ -11,18 +11,18 @@ function nbMain(i) {
   print(i.k)
 }
 function Nb(i) {
-  i.skip="?"
-  i.m=2
-  i.k=1
-  i.sep=","
-  i.start = 5
+  i.skip   = "?"
+  i.m      = 2
+  i.k      = 1
+  i.sep    = ","
+  i.start  = 5
+  i.klass  = ""
   i.doomed = "([ \t]|#.*)"
   i.instances = 0
   has(i,"head")
   has(i,"name")
   has(i,"data")
   has(i,"all")
-  i.klass=""
   has(i,"abcd","Abcd")
 }
 function lines(i,fun, file,   n,line,a) {
@@ -36,7 +36,7 @@ function lines(i,fun, file,   n,line,a) {
   close(file)
 }
 function what2do(i, n, a,    got,want) {
-  if (n == 0)      return header(i, a)
+  if (n == 0) return header(i, a)
   if (n > i.start) {
     want = a[i.k]
     got = classify(i,a)
@@ -51,6 +51,7 @@ function header(i,a,     c) {
     i.name[a[c]] = c }
 }
 function train(i,a,k,   c,x) {
+  print("k",k)
   i.instances++
   i.all[k]++
   for(c in a) 
