@@ -1,94 +1,91 @@
 #!/usr/bin/env ../fun
 # vim: filetype=awk nospell ts=2 sw=2 sts=2  et :
 
-#DEF _tbl head,name,data,all,abcd
+eg. at ../data/weathered.csv | ./nb.fun
+expect:
+
+   num |     a |     b |     c |     d |  acc |  pre |   pd |   pf |    f |    g | class
+  ---- |  ---- |  ---- |  ---- |  ---- | ---- | ---- | ---- | ---- | ---- | ---- |-----
+    22 |    11 |     2 |     4 |     5 | 0.73 | 0.56 | 0.71 | 0.27 | 0.63 | 0.72 | no
+    22 |     5 |     4 |     2 |    11 | 0.73 | 0.85 | 0.73 | 0.29 | 0.79 | 0.72 | yes
+
 
 @include "abcd.fun"
-@include "lib.fun"
+@include "read.awk"
 
 function MyNb(my) {
   my.m      = 2
   my.k      = 1
   my.start  = 5
-  my.klass  = ""
+  my.goal  = ""
 }
-function Nb(i) {
-  has(i,"data","Rows")
+function Run(i) {
+  has(i,"data","Data")
   has(i,"results","Abcd")
 }
-function Rows(i) {
+function Data(i) {
   i.instances=0
-  has(i,"head")
+  has(i,"cols")
   has(i,"name")
   has(i,"rows")
   has(i,"all")
 }
-function read(my,what,funs,file,   fun,pat,line,a) {
-  file=file?file:"-"
-  while((getline line < file) > 0)  {
-    gsub("([ \t]|#.*)/","", line)
-    if (line) {
-      split(line, a, ",")
-      for(pat in funs)
-        if (line ~ pat) {
-          fun = funs[pat]
-          @fun(my,what, a) }}
-  }  
-  close(file)
+function DataPrior(i,my,class) {
+  return  (i.all[class] + my.k) / (i.instances + my.k*length(i.rows))
 }
-
-#payload past ardoun file
-# learn paired with evluation
-# config seperaete to rest of sysmte
-# learner and eval seperate (learner does not kow it is being evalautes)
-
-function NbLearn(my,ai,a,   initialized,rows,want,got) {
-  initialized = length(ai.data.name)
+function DataEH(i,my,prior,class,col,x,   count) {
+  count = i.rows[class][col][x]
+  return  (count + my.m*prior) / (i.all[class]+my.m) 
+}
+function NbLearn(my,run,a,   initialized,rows,want,got) {
+  initialized = length(run.data.name)
   if (! initialized)
-     NbHeader(my,ai.data, a)
+     NbHeader(my,run.data, a)
   else {
-    if (ai.data.instances > my.start) 
-         Abcd1(ai.results, a[my.klass], 
-                           NbClassify(my,ai.data,a))
-    else 
-       NbTrain(my, ai.data,a) }
+    if (run.data.instances > my.start)  {
+      want = a[my.goal]
+      got  = NbClassify(my,run.data,a)
+      Abcd1(run.results, want, got)
+    }
+    NbTrain(my, run.data,a) 
+  }
 }
-function NbHeader(my,data,a,     c) { 
-  my.klass = my.klass? my.klass : length(a)
-  for(c in a) { 
-    data.head[c]    = a[c] 
-    data.name[a[c]] = c }
+function NbHeader(my,data,a,     col,name) { 
+  my.goal = my.goal? my.goal : length(a)
+  for(col in a) {
+    name = a[col]
+    if (name !~ /%/) {
+      data.cols[col]  = name
+      data.name[name] = col }}
 }
-function NbTrain(my,data,a,   k,c,x) {
-  k = a[my.klass]
+function NbTrain(my,data,a,   class,col,x) {
+  class = a[my.goal]
   data.instances++
-  data.all[k]++
-  for(c in data.name) 
-    if ((x = a[c]) != "?")   
-      data.rows[k][c][x]++ 
+  data.all[class]++
+  for(col in data.cols) 
+    if ((x = a[col]) != "?")   
+      data.rows[class][col][x]++
 }
 function NbClassify(my,data,a,     
-                  some,like,all,k,prior,tmp,c,x,out) {
+                    like,class,prior,tmp,col,x,out) {
   like = -10^32
-  all  = data.instances + my.k*length(data.rows)
-  for(k in data.rows) {
-    some  = data.all[k] + my.m
-    prior = (data.all[k] + my.k) / all
+  for(class in data.rows) {
+    prior = DataPrior(data, my,class)
     tmp   = log(prior)
-    for(c in data.head) 
-      if (c != my.klass)  
-        if ((x = a[c]) != "?")
-          tmp += log(data[k][c][x] + my.m*prior) / some;
+    for(col in data.cols) {
+      if (col != my.goal)  
+        if ((x = a[col]) != "?")  
+          tmp += log( DataEH(data,my,prior,class,col,x) )
+    }
     if ( tmp >= like )  {
       like = tmp
-      out  = k }}
+      out  = class }}
   return out
 }
-function nbMain(       my,nb,funs) {
+function nbMain(       my,run,funs) {
   MyNb(my)
-  Nb(nb)
+  Run(run)
   funs["^data"] = "NbLearn"
-  read(my,nb,funs)
-  AbcdReport(nb.results)
+  read(my,run,funs)
+  AbcdReport(run.results)
 }
- 
