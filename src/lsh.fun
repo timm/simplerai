@@ -10,7 +10,6 @@ function LshNorm(x,lo,hi) {
   return (x - lo) / (hi - lo + 10^-32)
 }
 function LshDistance(i,a,b,lo,hi,p,  col,x,y,d,n) {
-  d=0
   n=10^-32
   for(col in i.indep) {
      x=a[col]
