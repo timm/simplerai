@@ -1,41 +1,40 @@
 #!/usr/bin/env ../fun
 # vim: filetype=awk nospell ts=2 sw=2 sts=2  et :
 
-eg. at ../data/weathered.csv | ./nb.fun
-expect:
-
-   num |     a |     b |     c |     d |  acc |  pre |   pd |   pf |    f |    g | class
-  ---- |  ---- |  ---- |  ---- |  ---- | ---- | ---- | ---- | ---- | ---- | ---- |-----
-    22 |    11 |     2 |     4 |     5 | 0.73 | 0.56 | 0.71 | 0.27 | 0.63 | 0.72 | no
-    22 |     5 |     4 |     2 |    11 | 0.73 | 0.85 | 0.73 | 0.29 | 0.79 | 0.72 | yes
-
-
-@include "abcd.fun"
 @include "read.awk"
 
-function MyNb(my) {
-  my.m      = 2
-  my.k      = 1
-  my.start  = 5
-  my.goal  = ""
+function MyLsh(my) {
+  my.p      = 2
 }
-function Run(i) {
-  has(i,"data","Data")
-  has(i,"results","Abcd")
+function LshNorm(i,col,x) {
+  return (x - i.lo[col]) / (i.hi[col] - i.lo[col] + 10^-32)
 }
-function Data(i) {
-  i.instances=0
-  has(i,"cols")
-  has(i,"freq")
-}
-function DataPrior(i,my,class) {
-  return  (i.all[class] + my.k) / (i.instances + my.k*length(i.freq))
-}
-function DataEH(i,my,prior,class,col,x,   count,all) {
-  count = i.freq[class][col][x]
-  all   = i.freq[class][my.goal][class]
-  return  (count + my.m*prior) / (all +my.m) 
-}
+function LshDistance(i,a,b,lo,hi,p,  col,x,y,d,n) {
+  d=0
+  n=10^-32
+  for(col in i.indep) {
+     x=a[col]
+     y=b[col]
+     if (! (x=="?" && y=="?")) {
+       n++
+       if (col in hi) {
+         if (x=="?") {
+            y=LshNorm(i,col,y,lo,hi)
+            x=y > 0.5? 0 : 1 }
+         else if (y=="?") {
+            x=LshNorm(i,col,x,lo,hi)
+            y=x > 0.5? 0 : 1 }
+         else {
+            x=LshNorm(i,col,x.lo,hi)
+            y=LshNorm(i,col,y) }
+         inc= x > y ? x-y: y-x
+       } else {
+         inc = x == y }
+       d += inc^p}
+   }
+   return (d/n)^(1/p)
+} 
+    
 
 function NbLearn(my,run,a) {
   if (! length(run.data.cols))
