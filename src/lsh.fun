@@ -6,8 +6,8 @@
 function MyLsh(my) {
   my.p      = 2
 }
-function LshNorm(i,col,x) {
-  return (x - i.lo[col]) / (i.hi[col] - i.lo[col] + 10^-32)
+function LshNorm(x,lo,hi) {
+  return (x - lo[col]) / (hi[col] - lo[col] + 10^-32)
 }
 function LshDistance(i,a,b,lo,hi,p,  col,x,y,d,n) {
   d=0
@@ -19,14 +19,14 @@ function LshDistance(i,a,b,lo,hi,p,  col,x,y,d,n) {
        n++
        if (col in hi) {
          if (x=="?") {
-            y=LshNorm(i,col,y,lo,hi)
+            y=LshNorm(i,col,y,lo[col],hi[col])
             x=y > 0.5? 0 : 1 }
          else if (y=="?") {
-            x=LshNorm(i,col,x,lo,hi)
+            x=LshNorm(i,col,x,lo[col],hi[col])
             y=x > 0.5? 0 : 1 }
          else {
-            x=LshNorm(i,col,x.lo,hi)
-            y=LshNorm(i,col,y) }
+            x=LshNorm(i,col,x,lo[col],hi[col])
+            y=LshNorm(i,col,y,lo[col],hi[col]) }
          inc= x > y ? x-y: y-x
        } else {
          inc = x == y }
