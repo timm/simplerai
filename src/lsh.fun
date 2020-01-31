@@ -29,7 +29,7 @@ function LshDistance(i,a,b,lo,hi,p,  col,x,y,d,n) {
             y=LshNorm(y,lo[col],hi[col]) }
          inc= x > y ? x-y: y-x
        } else {
-         inc = x == y }
+         inc = x != y }
        d += inc^p}
    }
    return (d/n)^(1/p)
