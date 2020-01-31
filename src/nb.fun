@@ -26,50 +26,41 @@ function Run(i) {
 function Data(i) {
   i.instances=0
   has(i,"cols")
-  has(i,"name")
-  has(i,"rows")
-  has(i,"all")
+  has(i,"freq")
 }
 function DataPrior(i,my,class) {
-  return  (i.all[class] + my.k) / (i.instances + my.k*length(i.rows))
+  return  (i.all[class] + my.k) / (i.instances + my.k*length(i.freq))
 }
-function DataEH(i,my,prior,class,col,x,   count) {
-  count = i.rows[class][col][x]
-  return  (count + my.m*prior) / (i.all[class]+my.m) 
+function DataEH(i,my,prior,class,col,x,   count,all) {
+  count = i.freq[class][col][x]
+  all   = i.freq[class][my.goal][class]
+  return  (count + my.m*prior) / (all +my.m) 
 }
-function NbLearn(my,run,a,   initialized,rows,want,got) {
-  initialized = length(run.data.name)
-  if (! initialized)
-     NbHeader(my,run.data, a)
-  else {
-    if (run.data.instances > my.start)  {
-      want = a[my.goal]
-      got  = NbClassify(my,run.data,a)
-      Abcd1(run.results, want, got)
-    }
-    NbTrain(my, run.data,a) 
-  }
+
+function NbLearn(my,run,a) {
+  if (! length(run.data.cols))
+     return NbHeader(my,run.data, a)
+  if (run.data.instances > my.start)  
+    Abcd1(run.results, a[my.goal], NbClassify(my,run.data,a))
+  NbTrain(my, run.data,a) 
 }
-function NbHeader(my,data,a,     col,name) { 
+function NbHeader(my,data,a,     col) { 
   my.goal = my.goal? my.goal : length(a)
-  for(col in a) {
-    name = a[col]
-    if (name !~ /%/) {
-      data.cols[col]  = name
-      data.name[name] = col }}
+  for(col in a) 
+    if (a[col] !~ /%/) 
+      data.cols[col]  = a[col]
 }
 function NbTrain(my,data,a,   class,col,x) {
   class = a[my.goal]
   data.instances++
-  data.all[class]++
   for(col in data.cols) 
     if ((x = a[col]) != "?")   
-      data.rows[class][col][x]++
+      data.freq[class][col][x]++
 }
 function NbClassify(my,data,a,     
                     like,class,prior,tmp,col,x,out) {
   like = -10^32
-  for(class in data.rows) {
+  for(class in data.freq) {
     prior = DataPrior(data, my,class)
     tmp   = log(prior)
     for(col in data.cols) {
@@ -79,7 +70,8 @@ function NbClassify(my,data,a,
     }
     if ( tmp >= like )  {
       like = tmp
-      out  = class }}
+      out  = class }
+  }
   return out
 }
 function nbMain(       my,run,funs) {
