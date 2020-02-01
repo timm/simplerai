@@ -6,12 +6,12 @@ expect:
 
    num |     a |     b |     c |     d |  acc |  pre |   pd |   pf |    f |    g | class
   ---- |  ---- |  ---- |  ---- |  ---- | ---- | ---- | ---- | ---- | ---- | ---- |-----
-    22 |    11 |     2 |     4 |     5 | 0.73 | 0.56 | 0.71 | 0.27 | 0.63 | 0.72 | no
-    22 |     5 |     4 |     2 |    11 | 0.73 | 0.85 | 0.73 | 0.29 | 0.79 | 0.72 | yes
+    22 |    11 |       |     4 |     7 | 0.82 | 0.64 | 1.00 | 0.27 | 0.78 | 0.85 | no
+    22 |     7 |     4 |       |    11 | 0.82 | 1.00 | 0.73 | 0.00 | 0.85 | 0.85 | yes
 
 
 @include "abcd.fun"
-@include "read.awk"
+@include "csv.awk"
 
 function MyNb(my) {
   my.m      = 2
@@ -37,13 +37,6 @@ function DataEH(i,my,prior,class,col,x,   count,all) {
   return  (count + my.m*prior) / (all +my.m) 
 }
 
-function NbLearn(my,run,a) {
-  if (! length(run.data.cols))
-     return NbHeader(my,run.data, a)
-  if (run.data.instances > my.start)  
-    Abcd1(run.results, a[my.goal], NbClassify(my,run.data,a))
-  NbTrain(my, run.data,a) 
-}
 function NbHeader(my,data,a,     col) { 
   my.goal = my.goal? my.goal : length(a)
   for(col in a) 
@@ -74,10 +67,16 @@ function NbClassify(my,data,a,
   }
   return out
 }
-function nbMain(       my,run,funs) {
+function NbLearn(f, my,run,a,  ready) {
   MyNb(my)
   Run(run)
-  funs["^data"] = "NbLearn"
-  read(my,run,funs)
+  while(csv(a,f))  {
+   if (ready++) {
+     if (run.data.instances > my.start)  
+       Abcd1(run.results, a[my.goal], NbClassify(my,run.data,a))
+     NbTrain(my, run.data,a) 
+   } else
+      NbHeader(my,run.data, a) }
   AbcdReport(run.results)
 }
+function nbMain() { NbLearn() }

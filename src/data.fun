@@ -7,6 +7,10 @@ function Cols(i) {
   has(i,"names")
   has(i,"indep")
 }
+function Data(i) {
+  has(i,"cols","Cols")
+  has(i,"rows")
+}
 function Cols0(i,a,    col,x) {
   for(col in a) {
     x = i.names[col] = a[col]
@@ -22,16 +26,20 @@ function Cols1(i,row,     col,x) {
       if (x > i.hi[col]) i.hi[col] = x
       if (x < i.lo[col]) i.lo[col] = x }
 }
-function Data(i) {
-  has(i,"cols","Cols")
-  has(i,"rows")
-}
 function Data1(i,a,   col,row) {
+  Cols1(i.cols,a)
   row = length(i.rows) + 1
   for(col in a)
    i.rows[row][col] = a[col]
+  return row
 }
-function DataDist(i,a,b,p,   e,col,b,inc,a1,b1,d,n) {
+function DataReady(i,a) {
+  if (length(i.cols.names))
+    return 1
+  else # set up columns (ready for next time), return 0
+    Cols0(i.cols,a) 
+}
+function DataDist(i,a,b,p,   n,col,a1,b1,inc,d) {
   p= p?p:2
   n=10^-32
   for(col in i.cols.indep) {
@@ -54,17 +62,10 @@ function DataDist1(i,x,y,col,  e,hi,lo) {
     x = y > 0.5 ? 0 : 1
   } else if (y=="?") {
     x = (x- lo)/ (hi - lo + e)
-    y = x > 0.5 ? 0 : 1 }
+    y = x > 0.5 ? 0 : 1 
   } else {
     x = (x- lo)/ (hi - lo + e)
     y = (y- lo)/ (hi - lo + e)
   }
   return x > y ? x-y: y-x
-}
-function DataRead(my,data,a) {
-  if (length(data.cols.names)) {
-    Cols1(data.cols,a)
-    Data1(data,     a) 
-  } else 
-    Cols0(data.cols, a)
 }

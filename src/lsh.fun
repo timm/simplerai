@@ -1,21 +1,39 @@
 #!/usr/bin/env ../fun
 # vim: filetype=awk nospell ts=2 sw=2 sts=2  et :
 
-@include "read.awk"
+@include "csv.awk"
 @include "o.awk"
 @include "data.fun"
 
-function  lshMain(  data, my,funs) {
-  MyLsh(my)
-  Data(data)
-  funs["^data"] = "DataRead" 
-  read(my,data,funs)
-  o(data)
-}
-
 function MyLsh(my) {
   my.p = 2
+  my.start
 }
+function  lshMain( f) { Lsh(f) }
+
+function Lsh(f,   data, my,a,n,seen) {
+  MyLsh(my)
+  Data(data)
+  while(csv(a,f)) 
+   if(DataReady(data,a)) {
+     seen[ Data1(data,a) ]
+     if (n++ > my.start)
+       LshPoles(my,data.rows,seen)
+  }
+  if(n < my.start)
+    LshPoles(my,data.rows)
+  #o(data)
+}
+function LshPoles(my,rows,seen,   m,a,b,n) {
+  n=length(seen)
+  m =20
+  while(m-- >0) {
+    a = seen[int(n*rand())]
+    b = seen[int(n*rand())]
+    if(used[a,b]++ == 0)
+      print a,b }
+}
+
   # function Pair(i) {
 #   has(i,"a")
 #   has(i,"b")
