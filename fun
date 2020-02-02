@@ -37,10 +37,11 @@ lib() { cat <<-EOF
   function hasss( i,k,f,m,n)   {               zap(i,k); @f(i[k],m,n) }
   function hassss(i,k,f,m,n,o) {               zap(i,k); @f(i[k],m,n,o) }
 
-  function has1more(lst,new) {
-    has(lst, length(lst)+1, new)
+  function has1more(lst,new,f) {
+    has(lst, length(lst)+1, new,f)
     return length(lst)
-  }  
+  } 
+   
 
   function zap(i,k)         { i[k][0]; List(i[k])} 
   function List(i)          { split("",i,"") }

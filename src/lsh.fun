@@ -4,34 +4,53 @@
 @include "csv.awk"
 @include "o.awk"
 @include "data.fun"
+@include "ksort.awk"
+@include "cat.awk"
 
 function MyLsh(my) {
-  my.p = 2
-  my.start
+  my.p       = 2
+  my.start   = 5
+  my.samples = 100
+  my.poles   = 10
+  my.trim    = 0.95
 }
-function  lshMain( f) { Lsh(f) }
+function  lshMain( f) { srand(1); Lsh(f) }
 
-function Lsh(f,   data, my,a,n,seen) {
+function Lsh(f,   data, my,a,n,poles) {
   MyLsh(my)
   Data(data)
+  List(poles)
   while(csv(a,f)) 
-   if(DataReady(data,a)) {
-     seen[ Data1(data,a) ]
-     if (n++ > my.start)
-       LshPoles(my,data.rows,seen)
-  }
-  if(n < my.start)
-    LshPoles(my,data.rows)
-  #o(data)
+   if(DataReady(data,a)) 
+     Data1(data,a)
+  LshPoles(my,data,poles)
+  o(poles)
 }
-function LshPoles(my,rows,seen,   m,a,b,n) {
-  n=length(seen)
-  m =20
-  while(m-- >0) {
-    a = seen[int(n*rand())]
-    b = seen[int(n*rand())]
-    if(used[a,b]++ == 0)
-      print a,b }
+function Pole(i,zero,one,d) {
+  i.zero = zero
+  i.one = one
+  i.d =  d
+}
+function LshPoles(my,data,poles,
+                  m,a,b,n,used) {
+  n=length(data.rows)
+  for(m=1; m<=my.samples; m++) {
+    a = int(n*rand())+1
+    b = int(n*rand())+1
+    if(a != b)
+      if(used[a,b]++ == 0)  
+         hassss(poles,length(poles)+1, "Pole",a,b,
+                DataDist(data, data.rows[a], data.rows[b], my.p)) }
+  LshPolesPrune(my,poles)
+}
+function LshPolesPrune(my,poles,  hi,lo,p) {
+  ksort(poles,"d")
+  hi = int(length(poles)*my.trim) 
+  lo = hi - my.poles
+  if (lo<1) lo = 1
+  for(p in poles) 
+    if ((p>= hi) || (p <= lo)) 
+      delete poles[p]  
 }
 
   # function Pair(i) {
